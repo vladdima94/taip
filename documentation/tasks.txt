@@ -1,0 +1,36 @@
+Common tasks:
+   Lab1:
+     - created the team, decided to chose Lect.dr. Anca Ignat as our research coodinator and chose "Searching through big databases of images" as project theme.
+   Lab2:
+     - worked at the state-of-the-art document
+   Lab3:
+     - work at the requirements analysis document
+   Lab4:
+   Lab5:
+   Lab6:
+   Lab7:
+
+Individual tasks:
+  Aciobanitei Bogdan:
+     Lab3:
+       - understand the arhitecture and proposed improvements
+     Lab4:
+     Lab5:
+     Lab6:
+     Lab7:
+  Chiriac George:
+     Lab3:
+       - understand the arhitecture and proposed improvements
+       - created the following diagrams: Use Case and Sequence
+     Lab4:
+     Lab5:
+     Lab6:
+     Lab7:
+  Dima Vlad:
+     Lab3:
+       - created the arhitecture of the system and proposed it to the team
+       - created the following diagrams: Deployment and Package
+     Lab4:
+     Lab5:
+     Lab6:
+     Lab7:
