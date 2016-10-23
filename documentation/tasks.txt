@@ -14,6 +14,7 @@ Individual tasks:
   Aciobanitei Bogdan:
      Lab3:
        - understand the arhitecture and proposed improvements
+       - created the following diagrams: State and Class
      Lab4:
      Lab5:
      Lab6:
