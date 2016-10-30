@@ -30,8 +30,10 @@ Individual tasks:
   Dima Vlad:
      Lab3:
        - created the arhitecture of the system and proposed it to the team
-       - created the following diagrams: Deployment and Package
+       - created the following diagrams: Deployment, Package, Class Diagram for File Slave and File Master
      Lab4:
+       - implemented File Slave and File Master arhitecture and basic functionalities.
+       - Design Patterns used : Singleton, Factory, Adapter, Facade
      Lab5:
      Lab6:
      Lab7:
