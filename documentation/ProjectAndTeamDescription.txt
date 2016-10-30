@@ -1,0 +1,8 @@
+Project Name:
+     Searching in large image databases
+Team Members:
+     Dima Vlad          - vlad.dima@info.uaic.ro
+     Aciobanitei Bogdan -
+     Chiriac George     - 
+Coordinator:
+     Lect.dr. Ignat Anca

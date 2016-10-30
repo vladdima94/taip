@@ -1,0 +1,7 @@
+Lab3:
+       - understand the arhitecture and proposed improvements
+       - created the following diagrams: Use Case and Sequence
+Lab4:
+Lab5:
+Lab6:
+Lab7:
