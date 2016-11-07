@@ -5,20 +5,20 @@
  */
 package utils.JSONUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 /**
  *
  * @author Vlad
  */
-public class JSONListAdapter extends JSONAdapter{
+public class JSONListAdapter<T> extends JSONAdapter{
 
     @Override
     public Object getJSONData()
     {
-        ArrayList<String> data = (ArrayList)this.data;
+        if(this.data == null) return new JSONArray();
+        List<String> data = (List)this.data;
         JSONArray output = new JSONArray();
         int size = data.size();
         for(int i = 0; i < size; ++i)
@@ -26,5 +26,19 @@ public class JSONListAdapter extends JSONAdapter{
             output.add(data.get(i));
         }
         return output;
+    }
+    
+    @Override
+    public String toString()
+    {
+        if(this.data == null) return new JSONArray().toJSONString();
+        List<T> data = (List)this.data;
+        JSONArray output = new JSONArray();
+        int size = data.size();
+        for(int i = 0; i < size; ++i)
+        {
+            output.add(data.get(i));
+        }
+        return output.toJSONString();
     }
 }

@@ -39,15 +39,16 @@ public class ConfigParamsDAO extends DAO{
         }
         if(configParamsMap.get("LogFile") == null)
         {
-            FileMasterServlet.writeToLog("<WARNING>Missing Mandatory Param [LogFile] in config file!");
+            FileMasterServlet.writeToLog("<ERROR>Missing Mandatory Param [LogFile] in config file!");
             return;
         }
         FileMasterServlet.logFile = new File(configParamsMap.get("LogFile"));
-        if(configParamsMap.get("DBdriver") == null)FileMasterServlet.writeToLog("<WARNING>Missing Mandatory Param [driver] in config file!");
-        if(configParamsMap.get("DBlocation") == null)FileMasterServlet.writeToLog("<WARNING>Missing Mandatory Param [location] in config file!");
-        if(configParamsMap.get("DBusername") == null)FileMasterServlet.writeToLog("<WARNING>Missing Mandatory Param [DBusername] in config file!");
-        if(configParamsMap.get("DBpassword") == null)FileMasterServlet.writeToLog("<WARNING>Missing Mandatory Param [DBpassword] in config file!");
-        if(configParamsMap.get("MasterURI") == null)FileMasterServlet.writeToLog("<WARNING>Missing Mandatory Param [MasterURI] in config file!");
+        if(configParamsMap.get("DBdriver") == null)FileMasterServlet.writeToLog("<ERROR>Missing Mandatory Param [driver] in config file!");
+        if(configParamsMap.get("DBlocation") == null)FileMasterServlet.writeToLog("<ERROR>Missing Mandatory Param [location] in config file!");
+        if(configParamsMap.get("DBusername") == null)FileMasterServlet.writeToLog("<ERROR>Missing Mandatory Param [DBusername] in config file!");
+        if(configParamsMap.get("DBpassword") == null)FileMasterServlet.writeToLog("<ERROR>Missing Mandatory Param [DBpassword] in config file!");
+        if(configParamsMap.get("MasterURI") == null)FileMasterServlet.writeToLog("<WARNING>Missing Param [MasterURI] in config file! Mandatory if you are in FileSlave.");
+        if(configParamsMap.get("slaveRegisterToken") == null)FileMasterServlet.writeToLog("<WARNING>Missing Param [slaveRegisterToken] in config file! Using default key [vladdima]");
 
     }
 }

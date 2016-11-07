@@ -2,4 +2,4 @@ DBdriver=oracle.jdbc.driver.OracleDriver
 DBlocation=jdbc:oracle:thin:@localhost:1521:XE
 DBusername=userFunctions
 LogFile=E:\SlaveLog.txt
-MasterURI=http://localhost:8080/FileMaster/
+MasterURI=http://localhost:8080/FileMaster
