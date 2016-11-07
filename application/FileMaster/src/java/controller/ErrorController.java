@@ -6,10 +6,13 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import utils.JSONUtils.JSONListAdapter;
 import utils.JSONUtils.JsonUtils;
 import utils.UriUtils;
 
@@ -24,7 +27,14 @@ public class ErrorController implements Controller{
         try {
             JsonUtils responseBody = new JsonUtils();
             responseBody.setStatus("Error, unknown Action!");
-            responseBody.writeToOutput(response.getWriter(), null);
+            
+            List<String> data = new ArrayList();
+            data.add("Test1");
+            data.add("Test2");
+            JSONListAdapter test = new JSONListAdapter();
+            test.setData(data);
+            responseBody.setJSONAdapter(test);
+            responseBody.writeToOutput(response.getWriter());
         } catch (IOException ex) {
             Logger.getLogger(ErrorController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -42,29 +42,29 @@ public class QueryProtocol {
     
     public boolean validateRequest(HttpServletRequest request)
     {
-//        return true;
-        String entity = request.getRequestURI();
-        String token = request.getParameter("token");
-        if(token == null) return false;
-        else if(token.equals(adminKey))return true;
-        try {
-            return dataAccess.validateToken(entity, token);
-        } catch (SQLException ex) {
-            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.validateRequest.validateToken() : SQLException(" + ex.getMessage() + ")");
-        } catch (ClassNotFoundException ex) {
-            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.validateRequest.validateToken() : ClassNotFoundException(" + ex.getMessage() + ")");
-            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
+//
+//    
+        return true;
+//        String entity = request.getRequestURI();
+//        String token = request.getParameter("token");
+//        if(token == null) return false;
+//        else if(token.equals(adminKey))return true;
+//        try {
+//            return dataAccess.validateToken(entity, token);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+//            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest.validateToken() : SQLException(" + ex.getMessage() + ")");
+//        } catch (ClassNotFoundException ex) {
+//            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest.validateToken() : ClassNotFoundException(" + ex.getMessage() + ")");
+//            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
     }
     
-    public String generateEntityToken(String slave)
+    
+    public static String generateEntityToken()
     {
-        String token = null;
-        //TODO: generate user token and save it to DB using dataAccess;
-
-        return token;
+        return new BigInteger(130, securedRandom).toString();
     }
     
     
@@ -81,17 +81,28 @@ public class QueryProtocol {
         }
     }
     
+    
+    private static String userKey = "vladdima";
     private static String adminKey;
+    private static final SecureRandom securedRandom = new SecureRandom();
     public static void generateAdminKey()
     {
-        try(FileWriter output = new FileWriter(System.getProperty("user.dir") + "\\SlaveAdminKey.txt");
+        try(FileWriter output = new FileWriter(System.getProperty("user.dir") + "\\MasterAdminKey.txt");
                 BufferedWriter out = new BufferedWriter(output))
         {
-            adminKey = new BigInteger(130, new SecureRandom()).toString();
+            adminKey = new BigInteger(130, securedRandom).toString();
             out.append(adminKey).flush();
         } catch (IOException ex) {
             FileSlaveServlet.writeToLog("<WARNING> QueryProtocol.generateAdminKey() : IOException(Failed to write key to adminKey.txt)");
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public static String getUserKey()
+    {
+        return userKey;
+    }
+    public static void setUserKey(String newUserKey)
+    {
+        userKey = newUserKey;
     }
 }

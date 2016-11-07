@@ -18,12 +18,12 @@ public class QueryProtocolDAO extends DAO{
     
     public boolean validateToken(String entity, String token) throws SQLException, ClassNotFoundException
     {
-        Connection conn =super.connectToDatabase();
+//        Connection conn =super.connectToDatabase();
         
         //TODO: validate token with the one in DB;
         //////////////////////////////////////////
         
-        return false;
+        return true;
     }
     
     

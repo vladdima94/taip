@@ -3,7 +3,13 @@ Lab3:
    - created the following diagrams: Deployment, Package, Class Diagram for File Slave and File Master
 Lab4:
    - implemented File Slave and File Master arhitecture and basic functionalities.
-   - Design Patterns used : Singleton, Factory, Adapter, Facade
+   - Design Patterns used: 
+		Singleton : ControllerFactory, SearchController
+		Factory   : ControllerFactory, SearchController
+		Adapter   : JSONAdapter (abstract class), JSONListAdapter, JSONMapAdapter, 
+		Facade    : Controller (interface), ErrorController, SearchController, PrepareServletController, more to be added as we implement more functionalities
+			    SearchAlgorithm (interface), CBIRSearchAlgorith,
 Lab5:
+   - ran tests for QueryProtocol key generator and all JSONAdapters as it can be seen in directory "\taip\documentation\DimaVladTests" (not all tests were captured in screenshots)
 Lab6:
 Lab7:
