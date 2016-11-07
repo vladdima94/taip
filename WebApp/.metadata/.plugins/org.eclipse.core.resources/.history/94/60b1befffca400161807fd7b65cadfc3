@@ -1,0 +1,43 @@
+package service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import dao.UserDAOImpl;
+import model.User;
+
+public class IUserServiceImpl implements IUserService{
+
+	@Autowired
+	private UserDAOImpl userDAO;
+	
+	@Override
+	public User get(Long id) {
+		return userDAO.get(id);
+	}
+
+	@Override
+	public User create(User entity) {
+		return userDAO.create(entity);
+	}
+
+	@Override
+	public List<User> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User update(User entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void delete(User entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
