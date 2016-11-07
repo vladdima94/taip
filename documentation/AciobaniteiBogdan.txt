@@ -1,0 +1,17 @@
+Lab3:
+   - understand the arhitecture and proposed improvements
+   - created the following diagrams: State and Class
+Lab4:
+   - integrated Spring/Hibernate with PostgresDB for the Web Application
+   - configure Primefaces
+   - Design Patterns: 
+      
+		from Hibernate: Factory pattern in SessionFactory (UserDAOImpl)
+      
+		from Spring: Singleton - beans are singletons by default
+      
+		Composite: UserServiceImpl contains IUserDAO
+
+Lab5:
+Lab6:
+Lab7:

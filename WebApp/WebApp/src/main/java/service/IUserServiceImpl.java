@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dao.IUserDAO;
 import dao.UserDAOImpl;
 import model.User;
 
@@ -14,7 +15,7 @@ import model.User;
 public class IUserServiceImpl implements IUserService{
 
 	@Autowired
-	private UserDAOImpl userDAO;
+	private IUserDAO userDAO;
 	
 	@Override
 	public User get(Long id) {
