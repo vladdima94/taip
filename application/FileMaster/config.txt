@@ -1,0 +1,5 @@
+DBdriver=oracle.jdbc.driver.OracleDriver
+DBlocation=jdbc:oracle:thin:@localhost:1521:XE
+DBusername=userFunctions
+LogFile=E:\MasterLog.txt
+CacheSize=100

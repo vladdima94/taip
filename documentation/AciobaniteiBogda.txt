@@ -1,0 +1,8 @@
+Lab3:
+   - understand the arhitecture and proposed improvements
+   - created the following diagrams: State and Class
+Lab4:
+   - started integrating Spring/Hibernate with PostgresDB for the Web Application
+Lab5:
+Lab6:
+Lab7:
