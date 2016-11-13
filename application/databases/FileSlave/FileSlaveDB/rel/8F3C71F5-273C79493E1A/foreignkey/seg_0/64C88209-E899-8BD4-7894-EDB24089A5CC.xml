@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="64C88209-E899-8BD4-7894-EDB24089A5CC" containerWithKeyObject="AA8DBE19-AA16-E03B-17D1-202470651C7F" localFKIndex="0786F3AC-DE3F-7E87-57C9-CD8C00F94234" name="IMAGE_FEATURES_FEA_VECT_FK">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:28:41 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>0DB968E2-1063-F2BC-1F22-ED64E574E2AA</referredTableID>
+<keyObject>89DAD5E0-3E72-B0D9-096D-AA5AC79222B6</keyObject>
+<referredKeyID>89DAD5E0-3E72-B0D9-096D-AA5AC79222B6</referredKeyID>
+<mandatory>true</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

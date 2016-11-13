@@ -31,6 +31,14 @@ public class ControllerFactory {
             {
                 return new PrepareServletController();
             }
+            case "registerSlave":
+            {
+                return new RegisterSlaveController();
+            }
+            case "unregisterSlave":
+            {
+                return new UnregisterSlaveController();
+            }
             default: return new ErrorController();
         }
     }

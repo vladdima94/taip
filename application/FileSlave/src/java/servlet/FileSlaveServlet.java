@@ -14,7 +14,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,7 +34,7 @@ public class FileSlaveServlet extends HttpServlet {
     
     // Logging code ////////////////////////////////////////////////////////////
     public static File logFile = new File("fileSlaveLog.txt");
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy.mm.dd-hh:mm:ss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.mm.dd-hh:mm:ss");
     public static void writeToLog(String message)
     {
         synchronized(logFile)
@@ -62,7 +61,9 @@ public class FileSlaveServlet extends HttpServlet {
     @Override
     public void destroy() {
         super.destroy();
-        //TODO: unregister FileSlave from FileMaster
+        QueryProtocol.sendUnregisterRequestToMaster(FileSlaveServlet.configParams.get("MasterURI"), 
+                                                    FileSlaveServlet.configParams.get("requestsKey"), 
+                                                    FileSlaveServlet.configParams.get("SlaveURI"));
     }
     
     public static HashMap<String, String> configParams = new HashMap();

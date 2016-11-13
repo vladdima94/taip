@@ -6,18 +6,31 @@
 package QueryProtocol;
 
 import dao.QueryProtocolDAO;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONObject;
 import servlet.FileSlaveServlet;
+import utils.JSONUtils.JSONMapAdapter;
+import utils.JSONUtils.JSONStringAdapter;
+import utils.JSONUtils.JsonUtils;
 
 /**
  *
@@ -81,8 +94,103 @@ public class QueryProtocol {
         }
     }
     
+    public static void sendRegisterRequestToMaster(String entity, String token, String link)
+    {
+        if(entity == null || token == null || link == null)
+        {
+            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendRegisterRequestToMaster() : NULL MasterURI or SlaveURI in config File or invalid generated token.");
+        }
+        try {
+            URL url = new URL(entity + "/registerSlave?key=" + QueryProtocol.userRegistrationKey);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            
+            JsonUtils requestBody = new JsonUtils();
+            Map<String, String> data = new TreeMap();
+            data.put("link", link);
+            data.put("token", token);
+            JSONMapAdapter dataWrapper = new JSONMapAdapter();
+            dataWrapper.setData(data);
+            requestBody.setJSONAdapter(dataWrapper);
+            requestBody.setMessage("register");
+            
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            requestBody.writeToOutput(wr);
+            wr.flush();
+            
+            JSONObject responseJSON = JsonUtils.readBody(new InputStreamReader(conn.getInputStream()));
+            System.out.println("[FILE_SLAVE] : " + responseJSON.toJSONString());
+            String status = (String) responseJSON.get("status");
+            if(status == null)
+            {
+                FileSlaveServlet.writeToLog("<STATUS> Failed to register Slave to Master: [Invalid response from Master]");
+                return;
+            }
+            if(status.equals("success")){
+                FileSlaveServlet.writeToLog("<STATUS> Successfully registered Slave to Master key[" + token + "]");
+                FileSlaveServlet.configParams.put("requestsKey", token);
+            }
+            else{
+                FileSlaveServlet.writeToLog("<STATUS> Failed to registered Slave to Master key[" + token + "]");
+            }
+        } catch (MalformedURLException ex) {
+            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendRegisterRequestToMaster() : MalformedURLException(" + ex.getMessage() + ")");
+        } catch (IOException ex) {
+            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendRegisterRequestToMaster() : IOException(" + ex.getMessage() + ")");
+        }
+    }
+    public static void sendUnregisterRequestToMaster(String entity, String token, String link)
+    {
+        if(entity == null || token == null || link == null)
+        {
+            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendUnregisterRequestToMaster() : NULL MasterURI or SlaveURI in config File or invalid generated token.");
+        }
+        try {
+            URL url = new URL(entity + "/unregisterSlave?key=" + token);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            
+            JsonUtils requestBody = new JsonUtils();
+            Map<String, String> data = new TreeMap();
+            data.put("link", link);
+            data.put("token", token);
+            data.put("key", QueryProtocol.userRegistrationKey);
+            JSONMapAdapter dataWrapper = new JSONMapAdapter();
+            dataWrapper.setData(data);
+            requestBody.setJSONAdapter(dataWrapper);
+            requestBody.setMessage("register");
+            
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            requestBody.writeToOutput(wr);
+            wr.flush();
+            
+            JSONObject responseJSON = JsonUtils.readBody(new InputStreamReader(conn.getInputStream()));
+            String status = (String) responseJSON.get("status");
+            if(status == null)
+            {
+                FileSlaveServlet.writeToLog("<STATUS> Failed to unregister Slave to Master: [Invalid response from Master]");
+                return;
+            }
+            if(status.equals("success"))FileSlaveServlet.writeToLog("<STATUS> Successfully unregistered Slave to Master.");
+            else FileSlaveServlet.writeToLog("<STATUS> Failed to unregistered Slave to Master.");
+        } catch (MalformedURLException ex) {
+            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendUnregisterRequestToMaster() : MalformedURLException(" + ex.getMessage() + ")");
+        } catch (IOException ex) {
+            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendUnregisterRequestToMaster() : IOException(" + ex.getMessage() + ")");
+        }
+    }
     
-    private static String userKey = "vladdima";
+    
+    public static String acceptQueriesKey;
+    private static String userRegistrationKey = "vladdima";
     private static String adminKey;
     private static final SecureRandom securedRandom = new SecureRandom();
     public static void generateAdminKey()
@@ -97,12 +205,12 @@ public class QueryProtocol {
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static String getUserKey()
+    public static String getUserRegistrationKey()
     {
-        return userKey;
+        return userRegistrationKey;
     }
-    public static void setUserKey(String newUserKey)
+    public static void setUserRegistrationKey(String newUserKey)
     {
-        userKey = newUserKey;
+        userRegistrationKey = newUserKey;
     }
 }

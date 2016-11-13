@@ -1,0 +1,60 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="AA8DBE19-AA16-E03B-17D1-202470651C7F" name="IMAGE_FEATURES">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:26:40 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<ordsAlias>table_5</ordsAlias>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IMAGE_ID" id="D736662B-6B08-2FCA-2E03-293F3C145067">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:27:14 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="2C136303-DEBC-F371-739C-4E8F20F5A88E" referredColumn="29011104-AE8C-4F8C-C0E7-61493AC3C25A"/>
+</associations>
+</Column>
+<Column name="FEATURE_ID" id="7C78F2EB-F738-F86C-F6F6-6A88A7283A2C">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:27:29 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="64C88209-E899-8BD4-7894-EDB24089A5CC" referredColumn="20EFF3F7-B3DB-ED8E-2161-E868413E727A"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="F961F832-92F1-96A6-D3F4-464F668677E7" name="IMAGE_FEATURES_IMAGES_TABLE_FK">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:28:18 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D736662B-6B08-2FCA-2E03-293F3C145067"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="0786F3AC-DE3F-7E87-57C9-CD8C00F94234" name="IMAGE_FEATURES_FEA_VECT_FK">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:28:41 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="7C78F2EB-F738-F86C-F6F6-6A88A7283A2C"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -18,8 +18,8 @@ public abstract class DAO {
     
     protected Connection connectToDatabase() throws ClassNotFoundException, SQLException
     {
-        Class.forName(FileMasterServlet.configParams.get("driver"));
-        Connection conn = DriverManager.getConnection(FileMasterServlet.configParams.get("location"),
+        Class.forName(FileMasterServlet.configParams.get("DBdriver"));
+        Connection conn = DriverManager.getConnection(FileMasterServlet.configParams.get("DBlocation"),
                                                       FileMasterServlet.configParams.get("DBusername"), FileMasterServlet.configParams.get("DBpassword"));
         return conn;
     }

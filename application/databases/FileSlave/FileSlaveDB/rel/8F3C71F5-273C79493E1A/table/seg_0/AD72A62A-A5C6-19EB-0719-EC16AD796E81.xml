@@ -1,0 +1,32 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="AD72A62A-A5C6-19EB-0719-EC16AD796E81" name="STATS">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:25:29 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<ordsAlias>table_4</ordsAlias>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="MAX_DB_SIZE" id="9101C502-89F5-9507-BEC4-EEEFF3CE6BCD">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:26:24 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="CURRENT_DB_SIZE" id="244089AE-1D33-3A22-5ED2-F69603D32975">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:26:24 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+</Table>
