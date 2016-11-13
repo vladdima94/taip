@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<LogicalDesign class="oracle.dbtools.crest.model.design.logical.LogicalDesign" name="Logical" id="CAEBF030-7EAA-B23D-C3F3-FB8B02F86F1D" mainViewID="0194CB66-8DF6-B388-4CC5-DB114B26694D">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:16:30 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</LogicalDesign>

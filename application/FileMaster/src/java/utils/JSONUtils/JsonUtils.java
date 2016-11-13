@@ -8,8 +8,6 @@ package utils.JSONUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -50,6 +48,7 @@ public class JsonUtils {
             output.put("data", "null");
         }
         out.append(output.toJSONString());
+        out.flush();
     }
     
     @Override

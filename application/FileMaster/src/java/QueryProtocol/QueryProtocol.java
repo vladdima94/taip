@@ -5,6 +5,7 @@
  */
 package QueryProtocol;
 
+import Exceptions.EntityAlreadyRegisteredException;
 import dao.QueryProtocolDAO;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import servlet.FileMasterServlet;
+import utils.UriUtils;
 
 /**
  *
@@ -40,25 +42,33 @@ public class QueryProtocol {
         }
     }
     
-    public boolean validateRequest(HttpServletRequest request)
+    public boolean validateRequest(HttpServletRequest request, String controller)
     {
-//
-//    
+        if(controller == null) return false;
+        String token = request.getParameter("key");
+        if(controller.equals("registerSlave"))
+        {
+            return token != null && token.equals(userKey);
+        }
+        else if(controller.equals("unregisterSlave"))
+        {
+            try {
+                return this.dataAccess.validateSlaveToken(token);
+            } catch (ClassNotFoundException ex) {
+                FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
+                return false;
+            } catch (SQLException ex) {
+                FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest() : SQLException(" + ex.getMessage() + ")");
+                return false;
+            }
+        }
+        else
+        {
+            
+        }
+        //TODO: add support for users query
         return true;
-//        String entity = request.getRequestURI();
-//        String token = request.getParameter("token");
-//        if(token == null) return false;
-//        else if(token.equals(adminKey))return true;
-//        try {
-//            return dataAccess.validateToken(entity, token);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-//            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest.validateToken() : SQLException(" + ex.getMessage() + ")");
-//        } catch (ClassNotFoundException ex) {
-//            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest.validateToken() : ClassNotFoundException(" + ex.getMessage() + ")");
-//            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return false;
+
     }
     
     
@@ -68,7 +78,7 @@ public class QueryProtocol {
     }
     
     
-    public void registerEntity(String entity, String token)
+    public void registerEntity(String entity, String token) throws EntityAlreadyRegisteredException
     {
         try {
             dataAccess.addTokenToDB(entity, token);
@@ -77,6 +87,18 @@ public class QueryProtocol {
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             FileMasterServlet.writeToLog("<ERROR> QueryProtocol.registerEntity.addTokenToDB() : SQLException(" + ex.getMessage() + ")");
+            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void unregisterEntity(String token) throws EntityAlreadyRegisteredException
+    {
+        try {
+            dataAccess.removeTokenToDB(token);
+        } catch (ClassNotFoundException ex) {
+            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.unregisterEntity.addTokenToDB() : ClassNotFoundException(" + ex.getMessage() + ")");
+            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.unregisterEntity.addTokenToDB() : SQLException(" + ex.getMessage() + ")");
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

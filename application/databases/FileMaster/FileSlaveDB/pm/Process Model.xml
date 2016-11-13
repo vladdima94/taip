@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ProcessModel class="oracle.dbtools.crest.model.design.process.ProcessModel" name="Process Model" id="6A428E7A-7412-F9A6-B443-763B11C6CDFF">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:16:31 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</ProcessModel>
