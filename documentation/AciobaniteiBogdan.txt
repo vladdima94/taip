@@ -4,5 +4,6 @@ Lab3:
 Lab4:
    - started integrating Spring/Hibernate with PostgresDB for the Web Application
 Lab5:
+   - ran tests for UserDAO as it can be seen in directory "\taip\documentation\AciobaniteiBogdanTests"
 Lab6:
 Lab7:
