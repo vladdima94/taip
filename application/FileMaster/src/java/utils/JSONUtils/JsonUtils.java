@@ -18,32 +18,73 @@ import org.json.simple.parser.ParseException;
  */
 public class JsonUtils {
     private String status;
+    private String message;
+    private JSONAdapter adapter;
     
     public void setStatus(String status)
     {
         this.status = status;
     }
+    public void setMessage(String message)
+    {
+        this.message = message;
+    }
+    public void setJSONAdapter(JSONAdapter adapter)
+    {
+        this.adapter = adapter;
+    }
     
-    public void writeToOutput(PrintWriter out, JSONAdapter data)
+    public void writeToOutput(PrintWriter out)
     {
         JSONObject output = new JSONObject();
         output.put("status", status);
-        if(data != null)
+        output.put("message", message);
+        if(adapter != null)
         {
-            output.put("data", data.getJSONData());
+            output.put("data", adapter.getJSONData());
         }
         else
         {
             output.put("data", "null");
         }
         out.append(output.toJSONString());
+        out.flush();
     }
     
+    @Override
+    public String toString()
+    {
+        JSONObject output = new JSONObject();
+        output.put("status", status);
+        output.put("message", message);
+        if(adapter != null)
+        {
+            output.put("data", adapter.getJSONData());
+        }
+        else
+        {
+            output.put("data", "null");
+        }
+        return output.toJSONString();
+    }
+
     
     private static JSONParser parser = new JSONParser();
-    public static JSONObject readBody(Reader input) throws ParseException, IOException
+    public static JSONObject readBody(Reader input)
     {
-        return (JSONObject) parser.parse(input);
+        try {
+            return (JSONObject) parser.parse(input);
+        } catch (IOException | ParseException ex) {
+            return null;
+        }
+    }
+    public static JSONObject readBody(String input)
+    {
+        try {
+            return (JSONObject) parser.parse(input);
+        } catch (ParseException ex) {
+            return null;
+        }
     }
 }
 

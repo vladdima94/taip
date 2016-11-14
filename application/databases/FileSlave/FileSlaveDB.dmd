@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="FileSlaveDB" id="B5EE762F-CF90-EDE0-A162-FC6892CD9D77" version="3.5">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:16:30 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>B5EE762F-CF90-EDE0-A162-FC6892CD9D77</designId>
+</OSDM_Design>

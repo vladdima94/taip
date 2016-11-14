@@ -19,7 +19,19 @@ public class PrepareServletController implements Controller{
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
         String configPath = request.getParameter("configFile");
+        String unregister = request.getParameter("unregister");
+        if(unregister != null && unregister.equals("true"))
+        {
+            QueryProtocol.QueryProtocol.sendUnregisterRequestToMaster(FileSlaveServlet.configParams.get("MasterURI"), 
+                                                        FileSlaveServlet.configParams.get("requestsKey"), 
+                                                        FileSlaveServlet.configParams.get("SlaveURI"));
+            return;
+        }
         FileSlaveServlet.loadConfigParams(configPath);
+        QueryProtocol.QueryProtocol.acceptQueriesKey = QueryProtocol.QueryProtocol.generateEntityToken();
+        QueryProtocol.QueryProtocol.sendRegisterRequestToMaster(FileSlaveServlet.configParams.get("MasterURI"), 
+                                                                QueryProtocol.QueryProtocol.acceptQueriesKey, 
+                                                                FileSlaveServlet.configParams.get("SlaveURI"));
     }
     
 }

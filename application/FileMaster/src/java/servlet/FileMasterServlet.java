@@ -79,16 +79,17 @@ public class FileMasterServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
+        UriUtils uri = new UriUtils(request.getRequestURI());
+        String controller = uri.getController();
         QueryProtocol queryProtocol = new QueryProtocol();
-        if(queryProtocol.validateRequest(request) == false)
+        if(queryProtocol.validateRequest(request, controller) == false)
         {
             //TODO: write invalid token json output
             response.setStatus(402);
             return;
         }
 
-        UriUtils uri = new UriUtils(request.getRequestURI());
-        Controller action = ControllerFactory.getInstance().getController(uri.getController());
+        Controller action = ControllerFactory.getInstance().getController(controller);
         action.processRequest(request, response, uri);
     }
 

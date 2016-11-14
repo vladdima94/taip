@@ -39,15 +39,17 @@ public class ConfigParamsDAO extends DAO{
         }
         if(configParamsMap.get("LogFile") == null)
         {
-            FileSlaveServlet.writeToLog("<WARNING>Missing Mandatory Param [LogFile] in config file!");
+            FileSlaveServlet.writeToLog("<ERROR>Missing Mandatory Param [LogFile] in config file!");
             return;
         }
         FileSlaveServlet.logFile = new File(configParamsMap.get("LogFile"));
-        if(configParamsMap.get("DBdriver") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Mandatory Param [driver] in config file!");
-        if(configParamsMap.get("DBlocation") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Mandatory Param [location] in config file!");
-        if(configParamsMap.get("DBusername") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Mandatory Param [DBusername] in config file!");
-        if(configParamsMap.get("DBpassword") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Mandatory Param [DBpassword] in config file!");
-        if(configParamsMap.get("MasterURI") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Mandatory Param [MasterURI] in config file!");
-
+        if(configParamsMap.get("DBdriver") == null)FileSlaveServlet.writeToLog("<ERROR>Missing Mandatory Param [driver] in config file!");
+        if(configParamsMap.get("DBlocation") == null)FileSlaveServlet.writeToLog("<ERROR>Missing Mandatory Param [location] in config file!");
+        if(configParamsMap.get("DBusername") == null)FileSlaveServlet.writeToLog("<ERROR>Missing Mandatory Param [DBusername] in config file!");
+        if(configParamsMap.get("DBpassword") == null)FileSlaveServlet.writeToLog("<ERROR>Missing Mandatory Param [DBpassword] in config file!");
+        if(configParamsMap.get("MasterURI") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Param [MasterURI] in config file! Mandatory if you are in FileSlave.");
+        if(configParamsMap.get("slaveRegisterToken") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Param [slaveRegisterToken] in config file! Using default key [vladdima]");
+        if(configParamsMap.get("maxDBSize") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Param [slaveRegisterToken] in config file! Using default key [vladdima]");
     }
 }
+

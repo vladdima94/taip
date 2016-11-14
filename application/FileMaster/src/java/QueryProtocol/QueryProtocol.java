@@ -5,6 +5,7 @@
  */
 package QueryProtocol;
 
+import Exceptions.EntityAlreadyRegisteredException;
 import dao.QueryProtocolDAO;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import servlet.FileMasterServlet;
+import utils.UriUtils;
 
 /**
  *
@@ -40,34 +42,43 @@ public class QueryProtocol {
         }
     }
     
-    public boolean validateRequest(HttpServletRequest request)
+    public boolean validateRequest(HttpServletRequest request, String controller)
     {
-        String entity = request.getRequestURI();
-        String token = request.getParameter("token");
-        if(token == null) return false;
-        else if(token.equals(adminKey))return true;
-        try {
-            return dataAccess.validateToken(entity, token);
-        } catch (SQLException ex) {
-            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest.validateToken() : SQLException(" + ex.getMessage() + ")");
-        } catch (ClassNotFoundException ex) {
-            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest.validateToken() : ClassNotFoundException(" + ex.getMessage() + ")");
-            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+        if(controller == null) return false;
+        String token = request.getParameter("key");
+        if(controller.equals("registerSlave"))
+        {
+            return token != null && token.equals(userKey);
         }
-        return false;
-    }
-    
-    public String generateEntityToken(String slave)
-    {
-        String token = null;
-        //TODO: generate user token and save it to DB using dataAccess;
+        else if(controller.equals("unregisterSlave"))
+        {
+            try {
+                return this.dataAccess.validateSlaveToken(token);
+            } catch (ClassNotFoundException ex) {
+                FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
+                return false;
+            } catch (SQLException ex) {
+                FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest() : SQLException(" + ex.getMessage() + ")");
+                return false;
+            }
+        }
+        else
+        {
+            
+        }
+        //TODO: add support for users query
+        return true;
 
-        return token;
     }
     
     
-    public void registerEntity(String entity, String token)
+    public static String generateEntityToken()
+    {
+        return new BigInteger(130, securedRandom).toString();
+    }
+    
+    
+    public void registerEntity(String entity, String token) throws EntityAlreadyRegisteredException
     {
         try {
             dataAccess.addTokenToDB(entity, token);
@@ -79,18 +90,41 @@ public class QueryProtocol {
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void unregisterEntity(String token) throws EntityAlreadyRegisteredException
+    {
+        try {
+            dataAccess.removeTokenToDB(token);
+        } catch (ClassNotFoundException ex) {
+            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.unregisterEntity.addTokenToDB() : ClassNotFoundException(" + ex.getMessage() + ")");
+            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.unregisterEntity.addTokenToDB() : SQLException(" + ex.getMessage() + ")");
+            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
+    
+    private static String userKey = "vladdima";
     private static String adminKey;
+    private static final SecureRandom securedRandom = new SecureRandom();
     public static void generateAdminKey()
     {
         try(FileWriter output = new FileWriter(System.getProperty("user.dir") + "\\MasterAdminKey.txt");
                 BufferedWriter out = new BufferedWriter(output))
         {
-            adminKey = new BigInteger(130, new SecureRandom()).toString();
+            adminKey = new BigInteger(130, securedRandom).toString();
             out.append(adminKey).flush();
         } catch (IOException ex) {
             FileMasterServlet.writeToLog("<WARNING> QueryProtocol.generateAdminKey() : IOException(Failed to write key to adminKey.txt)");
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public static String getUserKey()
+    {
+        return userKey;
+    }
+    public static void setUserKey(String newUserKey)
+    {
+        userKey = newUserKey;
     }
 }

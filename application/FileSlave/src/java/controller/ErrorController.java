@@ -27,7 +27,7 @@ public class ErrorController implements Controller{
         try {
             JsonUtils responseBody = new JsonUtils();
             responseBody.setStatus("Error, unknown Action!");
-            responseBody.writeToOutput(response.getWriter(), null);
+            responseBody.writeToOutput(response.getWriter());
         } catch (IOException ex) {
             Logger.getLogger(ErrorController.class.getName()).log(Level.SEVERE, null, ex);
         }

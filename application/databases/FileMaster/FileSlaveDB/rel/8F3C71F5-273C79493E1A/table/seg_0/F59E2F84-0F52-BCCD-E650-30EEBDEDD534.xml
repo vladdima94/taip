@@ -1,0 +1,46 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="F59E2F84-0F52-BCCD-E650-30EEBDEDD534" name="IMAGES_TABLE">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:18:41 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<ordsAlias>table_1</ordsAlias>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="29011104-AE8C-4F8C-C0E7-61493AC3C25A">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:19:20 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="LINK" id="87892C4E-CEDE-27C9-CDC9-442A5A9CC021">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:20:44 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1024</dataTypeSize>
+<ownDataTypeParameters>1024,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="0367F03F-9840-6613-108F-49C7319B2571" name="IMAGES_TABLE_PK">
+<createdBy>Vlad</createdBy>
+<createdTime>2016-11-13 11:20:48 UTC</createdTime>
+<ownerDesignName>FileSlaveDB</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="29011104-AE8C-4F8C-C0E7-61493AC3C25A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
