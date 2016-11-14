@@ -17,22 +17,16 @@ public class UserDAOImpl implements IUserDAO{
 	
 	@Override
 	public Session getCurrentSession() {
-//		// TODO Auto-generated method stub
-//		return null;
 		return sessionFactory.getCurrentSession();
 	}
 
 	@Override
 	public User get(Long id) {
-//		// TODO Auto-generated method stub
-//		return null;
 		return getCurrentSession().get(User.class, id);
 	}
 
 	@Override
 	public User create(User entity) {
-//		// TODO Auto-generated method stub
-//		return null;
 		getCurrentSession().save(entity);
 		return entity;
 	}
@@ -40,22 +34,17 @@ public class UserDAOImpl implements IUserDAO{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> findAll() {
-//		// TODO Auto-generated method stub
-//		return null;
 		return getCurrentSession().createCriteria(User.class).list();
 	}
 
 	@Override
 	public User update(User entity) {
-//		// TODO Auto-generated method stub
-//		return null;
 		getCurrentSession().update(entity);
 		return entity;
 	}
 
 	@Override
 	public void delete(User entity) {
-		// TODO Auto-generated method stub
 		if(entity != null)
 			getCurrentSession().delete(entity);	
 	}
