@@ -2,7 +2,7 @@ Lab3:
        - understand the arhitecture and proposed improvements
        - created the following diagrams: Use Case and Sequence
 Lab4:
-       - Edit in requirement analises document the following:
+       - Edit in requirement analyses document the following:
               3.1. Scenarios
               3.2. Use case model
 Lab5:
