@@ -1,0 +1,47 @@
+package dao;
+
+import java.util.List;
+
+import org.hibernate.Session;
+
+import model.User;
+
+public class UserDAOImpl implements IUserDAO{
+
+	@Override
+	public Session getCurrentSession() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User get(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User create(User entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User update(User entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void delete(User entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
