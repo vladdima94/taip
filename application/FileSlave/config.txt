@@ -1,8 +1,0 @@
-DBdriver=oracle.jdbc.driver.OracleDriver
-DBlocation=jdbc:oracle:thin:@localhost:1521:XE
-DBusername=userFunctions
-DBpassword=usrFnct
-LogFile=E:\SlaveLog.txt
-MasterURI=http://localhost:8080/FileMaster
-SlaveURI=http://localhost:8080/FileSlave
-maxDBSize=10
