@@ -18,7 +18,7 @@ public class JSONListAdapter<T> extends JSONAdapter{
     public Object getJSONData()
     {
         if(this.data == null) return new JSONArray();
-        List<String> data = (List)this.data;
+        List<T> data = (List)this.data;
         JSONArray output = new JSONArray();
         int size = data.size();
         for(int i = 0; i < size; ++i)

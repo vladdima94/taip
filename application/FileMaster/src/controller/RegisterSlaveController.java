@@ -8,6 +8,10 @@ package controller;
 import Exceptions.EntityAlreadyRegisteredException;
 import QueryProtocol.QueryProtocol;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
@@ -26,31 +30,39 @@ public class RegisterSlaveController implements Controller{
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
         try {
             JSONObject requestBody = JsonUtils.readBody(request.getReader());
+            if(requestBody == null)
+            {
+                setErrorMessage(400 , "No request specified!", response);
+                return;
+            }
             JSONArray data = (JSONArray) requestBody.get("data");
             if(data == null)
             {
                 setErrorMessage(400 , "Invalid data format!", response);
                 return;
             }
-            
-            JSONObject linkObj = (JSONObject) data.get(0);
-            JSONObject tokenObj = (JSONObject) data.get(1);
-            if(linkObj == null || tokenObj == null)
+            JSONObject linkObj = (JSONObject) data.get(1);
+            JSONObject tokenObj = (JSONObject) data.get(3);
+            JSONObject currentDB = (JSONObject) data.get(0);
+            JSONObject maxDB = (JSONObject) data.get(2);
+            if(linkObj == null || tokenObj == null || currentDB == null || maxDB == null)
             {
-                setErrorMessage(400 , "link, token or key not found in data JSON", response);
+                setErrorMessage(400 , "link, token, maxDB, currentDB or key not found in data JSON", response);
                 return;
             }
             
             String link = (String)linkObj.get("link");
             String token = (String)tokenObj.get("token");
-            if(link == null || token == null)
+            String maxDBSize = (String)maxDB.get("maxDBSize");
+            String currentDBSize = (String)currentDB.get("currentDBSize");
+            if(link == null || token == null || currentDBSize == null || maxDBSize == null)
             {
-                setErrorMessage(400 , "link, token or key not found in data JSON", response);
+                setErrorMessage(400 , "link, token, maxDB, currentDB or key not found in data JSON", response);
                 return;
             }
             
             QueryProtocol queryP = new QueryProtocol();
-            queryP.registerEntity(link, token);
+            queryP.registerEntity(link, token, maxDBSize, currentDBSize);
             
             JsonUtils responseBody = new JsonUtils();
             responseBody.setStatus("success");
@@ -66,7 +78,13 @@ public class RegisterSlaveController implements Controller{
             } catch (IOException ex1) {
                 FileMasterServlet.writeToLog("<ERROR> RegisterSlaveController.processRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
             }
-        }
+        } catch (ClassNotFoundException ex) {
+	        FileMasterServlet.writeToLog("<ERROR> QueryProtocol.registerEntity.addTokenToDB() : ClassNotFoundException(" + ex.getMessage() + ")");
+	        Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+	    } catch (SQLException ex) {
+	        FileMasterServlet.writeToLog("<ERROR> QueryProtocol.registerEntity.addTokenToDB() : SQLException(" + ex.getMessage() + ")");
+	        Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+	    }
     }
     
     

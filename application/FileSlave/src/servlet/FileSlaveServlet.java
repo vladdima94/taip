@@ -10,6 +10,8 @@ import QueryProtocol.QueryProtocol;
 import controller.Controller;
 import controller.ControllerFactory;
 import dao.ConfigParamsDAO;
+import dao.SearchSystemDAO;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -68,17 +70,28 @@ public class FileSlaveServlet extends HttpServlet {
                                                     FileSlaveServlet.configParams.get("SlaveURI"));
     }
     
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////
     public static HashMap<String, String> configParams = new HashMap();
+    public static int dbSize;
     public static void loadConfigParams(String path)
     {
         try {
             ConfigParamsDAO.loadConfigParams(path, configParams);
+            updatedbSize();
         } catch (IOException ex) {
             FileSlaveServlet.writeToLog("<ERROR> FileSlaveServlet.loadConfigParams.loadConfigParams() : IOException(" + ex.getMessage() + ")");
             Logger.getLogger(FileSlaveServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static void updatedbSize()
+    {
+    	SearchSystemDAO temp = new SearchSystemDAO();
+    	dbSize = temp.getDBSize();
+    }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////
     
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

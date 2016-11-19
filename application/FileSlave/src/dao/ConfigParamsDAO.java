@@ -50,6 +50,7 @@ public class ConfigParamsDAO extends DAO{
         if(configParamsMap.get("MasterURI") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Param [MasterURI] in config file! Mandatory if you are in FileSlave.");
         if(configParamsMap.get("slaveRegisterToken") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Param [slaveRegisterToken] in config file! Using default key [vladdima]");
         if(configParamsMap.get("maxDBSize") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Param [slaveRegisterToken] in config file! Using default key [vladdima]");
+        if(configParamsMap.get("algorithm") == null)FileSlaveServlet.writeToLog("<WARNING>Missing Param [algorithm] in config file! Using default algorithm [CBIR]");
     }
 }
 

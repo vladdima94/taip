@@ -10,8 +10,6 @@ import QueryProtocol.QueryProtocol;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import servlet.FileMasterServlet;
 import utils.JSONUtils.JsonUtils;
 import utils.UriUtils;

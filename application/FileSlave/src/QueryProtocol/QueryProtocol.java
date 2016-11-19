@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
@@ -94,7 +95,7 @@ public class QueryProtocol {
         }
     }
     
-    public static void sendRegisterRequestToMaster(String entity, String token, String link)
+    public static void sendRegisterRequestToMaster(HttpServletResponse response, String entity, String token, String link, String maxDBSize)
     {
         if(entity == null || token == null || link == null)
         {
@@ -113,6 +114,8 @@ public class QueryProtocol {
             Map<String, String> data = new TreeMap();
             data.put("link", link);
             data.put("token", token);
+            data.put("maxDBSize", maxDBSize);
+            data.put("currentDBSize", String.valueOf(FileSlaveServlet.dbSize));
             JSONMapAdapter dataWrapper = new JSONMapAdapter();
             dataWrapper.setData(data);
             requestBody.setJSONAdapter(dataWrapper);
@@ -123,7 +126,6 @@ public class QueryProtocol {
             wr.flush();
             
             JSONObject responseJSON = JsonUtils.readBody(new InputStreamReader(conn.getInputStream()));
-            System.out.println("[FILE_SLAVE] : " + responseJSON.toJSONString());
             String status = (String) responseJSON.get("status");
             if(status == null)
             {
@@ -133,9 +135,15 @@ public class QueryProtocol {
             if(status.equals("success")){
                 FileSlaveServlet.writeToLog("<STATUS> Successfully registered Slave to Master key[" + token + "]");
                 FileSlaveServlet.configParams.put("requestsKey", token);
+                response.setStatus(200);
+                PrintWriter writer = response.getWriter();
+                writer.append("Success").flush();
             }
             else{
                 FileSlaveServlet.writeToLog("<STATUS> Failed to registered Slave to Master key[" + token + "]");
+                response.setStatus(400);
+                PrintWriter writer = response.getWriter();
+                writer.append(" Failed to registered Slave to Master key").flush();
             }
         } catch (MalformedURLException ex) {
             FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendRegisterRequestToMaster() : MalformedURLException(" + ex.getMessage() + ")");

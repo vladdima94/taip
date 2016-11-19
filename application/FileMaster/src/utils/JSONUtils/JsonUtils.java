@@ -37,8 +37,11 @@ public class JsonUtils {
     public void writeToOutput(PrintWriter out)
     {
         JSONObject output = new JSONObject();
-        output.put("status", status);
-        output.put("message", message);
+        if(this.status == null) output.put("status", "null");
+        else output.put("status", status);
+        if(this.message == null) output.put("message", "null");
+        else output.put("message", message);
+        
         if(adapter != null)
         {
             output.put("data", adapter.getJSONData());
@@ -69,9 +72,9 @@ public class JsonUtils {
     }
 
     
-    private static JSONParser parser = new JSONParser();
     public static JSONObject readBody(Reader input)
     {
+    	JSONParser parser = new JSONParser();
         try {
             return (JSONObject) parser.parse(input);
         } catch (IOException | ParseException ex) {
@@ -80,6 +83,7 @@ public class JsonUtils {
     }
     public static JSONObject readBody(String input)
     {
+    	JSONParser parser = new JSONParser();
         try {
             return (JSONObject) parser.parse(input);
         } catch (ParseException ex) {
