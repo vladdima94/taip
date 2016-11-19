@@ -1,0 +1,16 @@
+Register Slave:
+
+1)   http://localhost:8080/FileMaster/prepareServlet?configFile=C:\Users\Vlad\Documents\NetBeansProjects\FileMaster\config.txt&token=1176528802486754142198935371230682342721
+2)   http://localhost:8080/FileSlave/prepareServlet?configFile=C:\Users\Vlad\Documents\NetBeansProjects\FileSlave\config.txt&token=377766876005232850836948551356404287623
+
+
+
+Unregister:
+
+3)   http://localhost:8080/FileSlave/prepareServlet?unregister=true
+
+
+
+Search
+
+1)   http://localhost:8080/FileMaster/search

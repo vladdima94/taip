@@ -39,6 +39,10 @@ public class ControllerFactory {
             {
                 return new UnregisterSlaveController();
             }
+            case "search":
+            {
+                return new SearchController();
+            }
             default: return new ErrorController();
         }
     }

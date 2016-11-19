@@ -8,9 +8,23 @@ package controller;
 import SearchSystem.SearchAlgorithmFactory;
 import SearchSystem.SearchingAlgorithms.SearchAlgorithm;
 import dao.SearchSystemDAO;
+import servlet.FileMasterServlet;
+
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import QueryProtocol.QueryProtocol;
 import utils.UriUtils;
+import utils.JSONUtils.JSONListAdapter;
+import utils.JSONUtils.JSONMapAdapter;
+import utils.JSONUtils.JSONMapObjectAdapter;
+import utils.JSONUtils.JsonUtils;
 
 /**
  *
@@ -20,12 +34,30 @@ public class SearchController implements Controller{
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
-        String algorithm = request.getParameter("algorithm");
-        //TODO: read double [] vectors from request and search
-        double [] data = null;
+        QueryProtocol sendRequests = new QueryProtocol();
         
-        SearchAlgorithm searchAlg = SearchAlgorithmFactory.getInstance().getAlgorithm(algorithm);
-        new SearchSystemDAO().searchFiles(10, searchAlg);
+        //TODO: add caching system
+        
+        List<Map<String, String>> results = sendRequests.sendRequestsToSlaves(request, response, null);
+        List<JSONMapObjectAdapter<String>> resultsJSON = new LinkedList();
+        for(Map<String, String> imgData : results)
+        {
+        	JSONMapObjectAdapter<String> temp = new JSONMapObjectAdapter();
+        	temp.setData(imgData);
+        	resultsJSON.add(temp);
+        }
+        JSONListAdapter<JSONMapObjectAdapter<String>> resultsAdapter = new JSONListAdapter();
+        resultsAdapter.setData(resultsJSON);
+        JsonUtils responseBody = new JsonUtils();
+        responseBody.setStatus("success");
+        responseBody.setJSONAdapter(resultsAdapter);
+        try {
+			responseBody.writeToOutput(response.getWriter());
+		} catch (IOException ex) {
+            FileMasterServlet.writeToLog("<ERROR> SearchController.processRequest() : IOException(" + ex.getMessage() + ")");
+            response.setStatus(400);
+		}
+        response.setStatus(200);
     }
     
 }

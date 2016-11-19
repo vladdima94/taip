@@ -31,6 +31,10 @@ public class ControllerFactory {
             {
                 return new PrepareServletController();
             }
+            case "search":
+            {
+                return new SearchController();
+            }
             default: return new ErrorController();
         }
     }

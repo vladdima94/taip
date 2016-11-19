@@ -29,9 +29,10 @@ public class PrepareServletController implements Controller{
         }
         FileSlaveServlet.loadConfigParams(configPath);
         QueryProtocol.QueryProtocol.acceptQueriesKey = QueryProtocol.QueryProtocol.generateEntityToken();
-        QueryProtocol.QueryProtocol.sendRegisterRequestToMaster(FileSlaveServlet.configParams.get("MasterURI"), 
-                                                                QueryProtocol.QueryProtocol.acceptQueriesKey, 
-                                                                FileSlaveServlet.configParams.get("SlaveURI"));
+        QueryProtocol.QueryProtocol.sendRegisterRequestToMaster(response, FileSlaveServlet.configParams.get("MasterURI"), 
+		                                                                QueryProtocol.QueryProtocol.acceptQueriesKey, 
+		                                                                FileSlaveServlet.configParams.get("SlaveURI"),
+		                                                                FileSlaveServlet.configParams.get("maxDBSize"));
     }
     
 }
