@@ -95,17 +95,41 @@ public class QueryProtocolDAO extends DAO{
     
     public boolean validateSlaveToken(String token) throws ClassNotFoundException, SQLException
     {
-        Connection conn = super.connectToDatabase();
-        String stmtSQL = "SELECT LINK FROM SLAVES_KEY_MASTER WHERE TOKEN LIKE ?";
-        PreparedStatement stmt = conn.prepareStatement(stmtSQL);
-        stmt.setString(1, token);
-        ResultSet rows = stmt.executeQuery();
-        if(conn != null)
-        {
-        	conn.close();
-        }
-        if(rows.getFetchSize() > 0)return true;
-        return false;
+    	Connection conn = null;
+    	try{
+	        conn = super.connectToDatabase();
+	        String stmtSQL = "SELECT LINK FROM SLAVES_KEY_MASTER WHERE TOKEN LIKE ?";
+	        PreparedStatement stmt = conn.prepareStatement(stmtSQL);
+	        stmt.setString(1, token);
+	        ResultSet rows = stmt.executeQuery();
+	        if(conn != null)
+	        {
+	        	conn.close();
+	        }
+	        if(rows.getFetchSize() > 0)return true;
+	        return false;
+    	}finally{
+    		if(conn != null) conn.close();
+    	}
+    }
+    public boolean validateUserToken(String token) throws ClassNotFoundException, SQLException
+    {
+    	Connection conn = null;
+    	try{
+	        conn = super.connectToDatabase();
+	        String stmtSQL = "SELECT ID FROM USERS_KEY_MASTER WHERE TOKEN LIKE ?";
+	        PreparedStatement stmt = conn.prepareStatement(stmtSQL);
+	        stmt.setString(1, token);
+	        ResultSet rows = stmt.executeQuery();
+	        if(conn != null)
+	        {
+	        	conn.close();
+	        }
+	        if(rows.getFetchSize() > 0)return true;
+	        return false;
+    	}finally{
+    		if(conn != null) conn.close();
+    	}
     }
 }
 

@@ -30,7 +30,7 @@ import utils.JSONUtils.JsonUtils;
  *
  * @author Vlad
  */
-public class SearchController implements Controller{
+public class SearchController extends Controller{
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
@@ -40,6 +40,7 @@ public class SearchController implements Controller{
         
         List<Map<String, String>> results = sendRequests.sendRequestsToSlaves(request, response, null);
         List<JSONMapObjectAdapter<String>> resultsJSON = new LinkedList();
+        if(results == null)return;
         for(Map<String, String> imgData : results)
         {
         	JSONMapObjectAdapter<String> temp = new JSONMapObjectAdapter();

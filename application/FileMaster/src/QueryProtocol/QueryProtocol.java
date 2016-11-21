@@ -6,6 +6,7 @@
 package QueryProtocol;
 
 import Exceptions.EntityAlreadyRegisteredException;
+import controller.Controller;
 import dao.QueryProtocolDAO;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -74,45 +75,22 @@ public class QueryProtocol {
             }
         } catch (ClassNotFoundException ex) {
             FileMasterServlet.writeToLog("<ERROR> QueryProtocol.sendRequestsToSlaves.getSlavesTokensPair() : ClassNotFoundException(" + ex.getMessage() + ")");
-            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } catch (SQLException ex) {
             FileMasterServlet.writeToLog("<ERROR> QueryProtocol.sendRequestsToSlaves.getSlavesTokensPair() : SQLException(" + ex.getMessage() + ")");
-            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (NullPointerException ex) {
+            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.sendRequestsToSlaves.getSlavesTokensPair() : NullPointerException(" + ex.getMessage() + ")");
+            Controller.setQuickResponseMessage(400, "error", "Load Master Config First!", resp);
+//            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
         
         return output;
     }
-    
-    
-    
-    public boolean validateRequest(HttpServletRequest request, String controller)
-    {
-        if(controller == null) return false;
-        String token = request.getParameter("key");
-        if(controller.equals("registerSlave"))
-        {
-            return token != null && token.equals(userKey);
-        }
-        else if(controller.equals("unregisterSlave"))
-        {
-            try {
-                return this.dataAccess.validateSlaveToken(token);
-            } catch (ClassNotFoundException ex) {
-                FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
-                return false;
-            } catch (SQLException ex) {
-                FileMasterServlet.writeToLog("<ERROR> QueryProtocol.validateRequest() : SQLException(" + ex.getMessage() + ")");
-                return false;
-            }
-        }
-        else
-        {
-            
-        }
-        //TODO: add support for users query
-        return true;
 
-    }
     
     
     public static String generateEntityToken()
@@ -121,23 +99,34 @@ public class QueryProtocol {
     }
     
     
-    public void registerEntity(String entity, String token, String maxDBSize, String currentDBSize) throws EntityAlreadyRegisteredException, ClassNotFoundException, SQLException
+    public void registerEntity(String entity, String token, String maxDBSize, String currentDBSize, HttpServletResponse response) throws EntityAlreadyRegisteredException, ClassNotFoundException, SQLException
     {
             dataAccess.addTokenToDB(entity, token, maxDBSize, currentDBSize);
     }
-    public void unregisterEntity(String token) throws EntityAlreadyRegisteredException
+    public void unregisterEntity(String token) throws ClassNotFoundException, SQLException
     {
-        try {
             dataAccess.removeTokenToDB(token);
-        } catch (ClassNotFoundException ex) {
-            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.unregisterEntity.addTokenToDB() : ClassNotFoundException(" + ex.getMessage() + ")");
-            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            FileMasterServlet.writeToLog("<ERROR> QueryProtocol.unregisterEntity.addTokenToDB() : SQLException(" + ex.getMessage() + ")");
-            Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
+    
+    
+    public static boolean checkAdminKey(String key)
+    {
+    	return key != null && adminKey != null && key.equals(adminKey);
+    }
+    public byte checkUserKey(String key)
+    {
+    	QueryProtocolDAO accessDB = new QueryProtocolDAO();
+    	try{
+    		if(accessDB.validateUserToken(key)) return 1;
+    		else return 0;
+    	}
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    		return -1;
+    	}
+    }
     
     private static String userKey = "vladdima";
     private static String adminKey;

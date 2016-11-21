@@ -11,10 +11,9 @@ package utils;
  */
 public class UriUtils {
     private String originalURI;
-    private String [] params;
-    
-    
-    public UriUtils(String originalURI)
+	private String [] params;
+
+	public UriUtils(String originalURI)
     {
         this.originalURI = originalURI;
         if(this.originalURI != null)
@@ -38,5 +37,5 @@ public class UriUtils {
             return this.params[3];
         }
         return null;
-    }       
+    }
 }

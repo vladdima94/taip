@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import Exceptions.EntityAlreadyRegisteredException;
 import utils.UriUtils;
 
 /**
@@ -73,24 +76,15 @@ public class FileMasterServlet extends HttpServlet {
             Logger.getLogger(FileMasterServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
+        
         UriUtils uri = new UriUtils(request.getRequestURI());
-        String controller = uri.getController();
-        QueryProtocol queryProtocol = new QueryProtocol();
-        if(queryProtocol.validateRequest(request, controller) == false)
-        {
-            //TODO: write invalid token json output
-            response.setStatus(402);
-            return;
-        }
-
-        Controller action = ControllerFactory.getInstance().getController(controller);
-        action.processRequest(request, response, uri);
+        Controller action = ControllerFactory.getInstance().getController(uri.getController());
+		action.processRequest(request, response, uri);
     }
 
 
