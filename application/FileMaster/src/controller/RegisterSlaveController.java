@@ -24,21 +24,21 @@ import utils.UriUtils;
  *
  * @author Vlad
  */
-public class RegisterSlaveController implements Controller{
+public class RegisterSlaveController extends Controller{
 
     @Override
-    public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
+    public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri){
         try {
             JSONObject requestBody = JsonUtils.readBody(request.getReader());
             if(requestBody == null)
             {
-                setErrorMessage(400 , "No request specified!", response);
+            	super.setQuickResponseMessage(400 ,"error", "No request specified!", response);
                 return;
             }
             JSONArray data = (JSONArray) requestBody.get("data");
             if(data == null)
             {
-                setErrorMessage(400 , "Invalid data format!", response);
+            	super.setQuickResponseMessage(400 ,"error", "Invalid data format!", response);
                 return;
             }
             JSONObject linkObj = (JSONObject) data.get(1);
@@ -47,7 +47,7 @@ public class RegisterSlaveController implements Controller{
             JSONObject maxDB = (JSONObject) data.get(2);
             if(linkObj == null || tokenObj == null || currentDB == null || maxDB == null)
             {
-                setErrorMessage(400 , "link, token, maxDB, currentDB or key not found in data JSON", response);
+            	super.setQuickResponseMessage(400 ,"error", "link, token, maxDB, currentDB or key not found in data JSON", response);
                 return;
             }
             
@@ -57,44 +57,18 @@ public class RegisterSlaveController implements Controller{
             String currentDBSize = (String)currentDB.get("currentDBSize");
             if(link == null || token == null || currentDBSize == null || maxDBSize == null)
             {
-                setErrorMessage(400 , "link, token, maxDB, currentDB or key not found in data JSON", response);
+            	super.setQuickResponseMessage(400 ,"error", "link, token, maxDB, currentDB or key not found in data JSON", response);
                 return;
             }
             
             QueryProtocol queryP = new QueryProtocol();
-            queryP.registerEntity(link, token, maxDBSize, currentDBSize);
-            
-            JsonUtils responseBody = new JsonUtils();
-            responseBody.setStatus("success");
-            responseBody.writeToOutput(response.getWriter());
-            response.setStatus(200);
-            FileMasterServlet.writeToLog("<STATUS> Succesully registered FileSlave [" + link + "] with token [" + token + "]");
+            queryP.registerEntity(link, token, maxDBSize, currentDBSize, response);
         } catch (IOException ex) {
-            FileMasterServlet.writeToLog("<ERROR> RegisterSlaveController.processRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
-        } catch (EntityAlreadyRegisteredException ex) {
-            try {
-                FileMasterServlet.writeToLog("<ERROR> QueryProtocol.registerEntity.addTokenToDB() : EntityAlreadyRegisteredException(" + ex.getMessage() + ")");
-                setErrorMessage(400 , "link or token not found in data JSON", response);
-            } catch (IOException ex1) {
-                FileMasterServlet.writeToLog("<ERROR> RegisterSlaveController.processRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
-            }
-        } catch (ClassNotFoundException ex) {
-	        FileMasterServlet.writeToLog("<ERROR> QueryProtocol.registerEntity.addTokenToDB() : ClassNotFoundException(" + ex.getMessage() + ")");
-	        Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-	    } catch (SQLException ex) {
-	        FileMasterServlet.writeToLog("<ERROR> QueryProtocol.registerEntity.addTokenToDB() : SQLException(" + ex.getMessage() + ")");
-	        Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-    }
-    
-    
-    public void setErrorMessage(int responseStatus, String message, HttpServletResponse response) throws IOException
-    {
-        response.setStatus(responseStatus);
-        response.setHeader("Content-Type", "application/json");
-        JsonUtils responseError = new JsonUtils();
-        responseError.setMessage(message);
-        responseError.setStatus("error");
-        responseError.writeToOutput(response.getWriter());
+            FileMasterServlet.writeToLog("<ERROR> RegisterSlaveController.processRequest() : IOException(" + ex.getMessage() + ")");
+            super.setQuickResponseMessage(500 , "error", "Internal Server Error. We are trying to fix it!", response);
+        } catch(Exception ex)
+        {
+        	
+        }
     }
 }

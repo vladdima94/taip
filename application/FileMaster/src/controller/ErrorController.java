@@ -20,7 +20,7 @@ import utils.UriUtils;
  *
  * @author Vlad
  */
-public class ErrorController implements Controller{
+public class ErrorController extends Controller{
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {

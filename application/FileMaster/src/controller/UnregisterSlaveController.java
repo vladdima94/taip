@@ -18,7 +18,7 @@ import utils.UriUtils;
  *
  * @author Vlad
  */
-public class UnregisterSlaveController implements Controller{
+public class UnregisterSlaveController extends Controller{
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
@@ -26,7 +26,7 @@ public class UnregisterSlaveController implements Controller{
             String key = request.getParameter("key");
             if(key == null)
             {
-                setErrorMessage(400 , "Key not found", response);
+                super.setQuickResponseMessage(400 ,"error", "Key not found", response);
                 return;
             }
             
@@ -40,23 +40,8 @@ public class UnregisterSlaveController implements Controller{
             FileMasterServlet.writeToLog("<STATUS> Succesully unregistered FileSlave with token [" + key + "]");
         } catch (IOException ex) {
             FileMasterServlet.writeToLog("<ERROR> UnregisterSlaveController.processRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
-        } catch (EntityAlreadyRegisteredException ex) {
-            try {
-                FileMasterServlet.writeToLog("<ERROR> UnregisterSlaveController.registerEntity.addTokenToDB() : EntityAlreadyRegisteredException(" + ex.getMessage() + ")");
-                setErrorMessage(400 , "link or token not found in data JSON", response);
-            } catch (IOException ex1) {
-                FileMasterServlet.writeToLog("<ERROR> UnregisterSlaveController.processRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
-            }
+        } catch (Exception ex) {
+            
         }
-    }
-        
-    public void setErrorMessage(int responseStatus, String message, HttpServletResponse response) throws IOException
-    {
-        response.setStatus(responseStatus);
-        response.setHeader("Content-Type", "application/json");
-        JsonUtils responseError = new JsonUtils();
-        responseError.setMessage(message);
-        responseError.setStatus("error");
-        responseError.writeToOutput(response.getWriter());
     }
 }

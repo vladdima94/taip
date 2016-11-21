@@ -14,12 +14,13 @@ import utils.UriUtils;
  *
  * @author Vlad
  */
-public class PrepareServletController implements Controller{
+public class PrepareServletController extends Controller{
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
         String configPath = request.getParameter("configFile");
         FileMasterServlet.loadConfigParams(configPath);
+        super.setQuickResponseMessage(200,"success" ,"Successfully Configured!", response);
     }
     
 }
