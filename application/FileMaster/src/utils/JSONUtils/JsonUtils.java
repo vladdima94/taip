@@ -6,6 +6,7 @@
 package utils.JSONUtils;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import org.json.simple.JSONObject;
@@ -33,7 +34,22 @@ public class JsonUtils {
     {
         this.adapter = adapter;
     }
-    
+
+    public void writeToOutput(OutputStreamWriter out) throws IOException
+    {
+        JSONObject output = new JSONObject();
+        output.put("status", status);
+        output.put("message", message);
+        if(adapter != null)
+        {
+            output.put("data", adapter.getJSONData());
+        }
+        else
+        {
+            output.put("data", "null");
+        }
+        out.append(output.toJSONString());
+    }
     public void writeToOutput(PrintWriter out)
     {
         JSONObject output = new JSONObject();

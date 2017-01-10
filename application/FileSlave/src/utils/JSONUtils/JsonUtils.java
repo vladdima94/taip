@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
@@ -91,7 +92,7 @@ public class JsonUtils {
     {
         try {
             return (JSONObject) parser.parse(input);
-        } catch (IOException | ParseException ex) {
+        } catch (IOException | ParseException | NoSuchElementException ex) {
             return null;
         }
     }

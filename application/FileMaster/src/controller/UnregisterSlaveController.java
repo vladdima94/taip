@@ -32,14 +32,8 @@ public class UnregisterSlaveController extends Controller{
             
             QueryProtocol queryP = new QueryProtocol();
             queryP.unregisterEntity(key);
-            
-            JsonUtils responseBody = new JsonUtils();
-            responseBody.setStatus("success");
-            responseBody.writeToOutput(response.getWriter());
-            response.setStatus(200);
+            Controller.setQuickResponseMessage(200, "success", "Succesfully unregistered Slave", response);
             FileMasterServlet.writeToLog("<STATUS> Succesully unregistered FileSlave with token [" + key + "]");
-        } catch (IOException ex) {
-            FileMasterServlet.writeToLog("<ERROR> UnregisterSlaveController.processRequest() : ClassNotFoundException(" + ex.getMessage() + ")");
         } catch (Exception ex) {
             
         }

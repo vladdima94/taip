@@ -13,7 +13,13 @@ public class JSONStringAdapter extends JSONAdapter{
 
     @Override
     public Object getJSONData() {
-        return this.data;
+        return data;
     }
     
+    
+
+    @Override
+    public String toString() {
+    	return data.toString();
+    }
 }

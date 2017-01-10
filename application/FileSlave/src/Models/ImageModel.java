@@ -1,8 +1,9 @@
 package Models;
 
-public class ImageModel {
+public class ImageModel implements Comparable<ImageModel>{
 	public String link;
-	public String similarity;
+	public String diskPath;
+	public double similarity;
 	
 	
 	@Override
@@ -12,10 +13,15 @@ public class ImageModel {
 		output.append("{\"link\":\"");
 		if(link != null)output.append(link);
 		else output.append(":\"null");
-		output.append("\",\"similarity\":\"");
-		if(similarity!= null) output.append(similarity);
-		else output.append(":\"null");
+		output.append("\",\"similarity\":\"").append(String.valueOf(similarity));
 		output.append("\"}");
 		return output.toString();
+	}
+
+
+	@Override
+	public int compareTo(ImageModel o) {
+		if(this.similarity < o.similarity) return 1;
+		return -1;
 	}
 }

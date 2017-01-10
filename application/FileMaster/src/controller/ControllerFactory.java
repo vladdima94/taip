@@ -29,10 +29,10 @@ public class ControllerFactory {
         if(type == null) return new ErrorController();
         switch(type)
         {
-            case "prepareServlet":
-            {
-                return new PrepareServletController();
-            }
+	        case "search":
+	        {
+	            return new SearchController();
+	        }
             case "registerSlave":
             {
                 return new RegisterSlaveController();
@@ -41,9 +41,13 @@ public class ControllerFactory {
             {
                 return new UnregisterSlaveController();
             }
-            case "search":
+            case "prepareServlet":
             {
-                return new SearchController();
+                return new PrepareServletController();
+            }
+            case "upload":
+            {
+                return new UploadImageController();
             }
             default: return new ErrorController();
         }

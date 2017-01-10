@@ -7,10 +7,11 @@ package servlet;
  */
 
 import QueryProtocol.QueryProtocol;
+import SearchSystem.SearchingAlgorithms.SearchAlgorithmFactory;
 import controller.Controller;
 import controller.ControllerFactory;
-import dao.ConfigParamsDAO;
-import dao.SearchSystemDAO;
+import dao.Factory.AbstractFactory;
+import dao.Factory.DAOFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,13 +27,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.opencv.core.Core;
+
 import utils.UriUtils;
+import dao.*;
 
 /**
  *
  * @author Vlad
  */
-@WebServlet("/*")
 public class FileSlaveServlet extends HttpServlet {
     
     
@@ -55,6 +59,15 @@ public class FileSlaveServlet extends HttpServlet {
     }
     ////////////////////////////////////////////////////////////////////////////
 
+    static{
+    	try{
+    		System.load(new File("D:\\Programe\\opencv\\opencv\\build\\java\\x64\\opencv_java310.dll").getAbsolutePath());
+    	}catch(UnsatisfiedLinkError ex)
+    	{
+    		if(!ex.getMessage().contains("already loaded")) throw ex;
+    	}
+//        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    }
     
     @Override
     public void init() throws ServletException {
@@ -71,6 +84,11 @@ public class FileSlaveServlet extends HttpServlet {
     }
     
     
+
+    ///////////////////////////////// Database ////////////////////////////////////////////////
+    public static DAOFactory daoFactory = AbstractFactory.getInstance().getDAOFactoryInstance(AbstractFactory.JDBC_DAO_FACTORY);
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    
     
     ///////////////////////////////////////////////////////////////////////////////////////////
     public static HashMap<String, String> configParams = new HashMap();
@@ -78,7 +96,7 @@ public class FileSlaveServlet extends HttpServlet {
     public static void loadConfigParams(String path)
     {
         try {
-            ConfigParamsDAO.loadConfigParams(path, configParams);
+            dao.ConfigParamsDAO.loadConfigParams(path, configParams);
             updatedbSize();
         } catch (IOException ex) {
             FileSlaveServlet.writeToLog("<ERROR> FileSlaveServlet.loadConfigParams.loadConfigParams() : IOException(" + ex.getMessage() + ")");
@@ -87,7 +105,7 @@ public class FileSlaveServlet extends HttpServlet {
     }
     public static void updatedbSize()
     {
-    	SearchSystemDAO temp = new SearchSystemDAO();
+    	SearchSystemDAO temp = (SearchSystemDAO)daoFactory.getDAOInstance(DAOFactory.SEARCH_SYSTEM_DAO);
     	dbSize = temp.getDBSize();
     }
 

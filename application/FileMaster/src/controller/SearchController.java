@@ -7,7 +7,7 @@ package controller;
 
 import SearchSystem.SearchAlgorithmFactory;
 import SearchSystem.SearchingAlgorithms.SearchAlgorithm;
-import dao.SearchSystemDAO;
+import dao.Concrete.ConcreteSearchSystemDAO;
 import servlet.FileMasterServlet;
 
 import java.io.IOException;
@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Exceptions.FileMasterNotConfiguredException;
 import QueryProtocol.QueryProtocol;
 import utils.UriUtils;
 import utils.JSONUtils.JSONListAdapter;
@@ -38,7 +39,14 @@ public class SearchController extends Controller{
         
         //TODO: add caching system
         
-        List<Map<String, String>> results = sendRequests.sendRequestsToSlaves(request, response, null);
+        List<Map<String, String>> results;
+        try{
+        	results = sendRequests.sendRequestsToSlaves(request, response, null);
+        }catch(FileMasterNotConfiguredException ex){
+            FileMasterServlet.writeToLog("<ERROR> SearchController.processRequest() : FileMasterNotConfiguredException(" + ex.getMessage() + ")");
+            Controller.setQuickResponseMessage(500, "error", "File Master not configured yet", response);
+            return;
+        }
         List<JSONMapObjectAdapter<String>> resultsJSON = new LinkedList();
         if(results == null)return;
         for(Map<String, String> imgData : results)

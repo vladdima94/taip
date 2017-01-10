@@ -24,20 +24,7 @@ public class ErrorController extends Controller{
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
-        try {
-            JsonUtils responseBody = new JsonUtils();
-            responseBody.setStatus("Error, unknown Action!");
-            
-            List<String> data = new ArrayList();
-            data.add("Test1");
-            data.add("Test2");
-            JSONListAdapter test = new JSONListAdapter();
-            test.setData(data);
-            responseBody.setJSONAdapter(test);
-            responseBody.writeToOutput(response.getWriter());
-        } catch (IOException ex) {
-            Logger.getLogger(ErrorController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        	Controller.setQuickResponseMessage(400, "error", "Unknown action!", response);
     }
     
 }

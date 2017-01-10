@@ -7,13 +7,13 @@ import QueryProtocol.QueryProtocol;
 import controller.Controller;
 import utils.UriUtils;
 
-public aspect SecurityAspect {
+public aspect FileMasterSecurityAspect {
 
-	pointcut adminSecurityCheck() : call (public void controller.Controller.processRequest(HttpServletRequest,HttpServletResponse,UriUtils)) && target(controller.PrepareServletController);
-	pointcut userSecurityCheck() :  call (public void controller.Controller.processRequest(HttpServletRequest,HttpServletResponse,UriUtils)) && target(controller.SearchController);
-	pointcut registerSlaveSecurityCheck() : call(public void controller.Controller.processRequest(HttpServletRequest,HttpServletResponse,UriUtils)) && target(controller.RegisterSlaveController);
+	pointcut FileMasterAdminSecurityCheck() : call (public void controller.Controller.processRequest(HttpServletRequest,HttpServletResponse,UriUtils)) && target(controller.PrepareServletController);
+	pointcut FileMasterUserSecurityCheck() :  call (public void controller.Controller.processRequest(HttpServletRequest,HttpServletResponse,UriUtils)) && target(controller.SearchController);
+	pointcut FileMasterRegisterSlaveSecurityCheck() : call(public void controller.Controller.processRequest(HttpServletRequest,HttpServletResponse,UriUtils)) && target(controller.RegisterSlaveController);
 	
-	void around() : adminSecurityCheck()
+	void around() : FileMasterAdminSecurityCheck()
 	{
 		System.out.println("adminSecurityCheck Security Check");
 		Object [] args = thisJoinPoint.getArgs();
@@ -27,14 +27,14 @@ public aspect SecurityAspect {
 		}
 	}
 
-	void around() : userSecurityCheck()
+	void around() : FileMasterUserSecurityCheck()
 	{
-		System.out.println("userSecurityCheck Security Check");
 		Object [] args = thisJoinPoint.getArgs();
 		String token = ((HttpServletRequest)args[0]).getParameter("token");
 		if(token == null)return;
 		QueryProtocol test = new QueryProtocol();
 		byte testResult = test.checkUserKey(token);
+		System.out.println("userSecurityCheck Security Check");
 		if(testResult == 1) proceed();
 		else if(testResult == 0)
 		{
@@ -46,7 +46,7 @@ public aspect SecurityAspect {
 		}
 		
 	}
-	void around() : registerSlaveSecurityCheck()
+	void around() : FileMasterRegisterSlaveSecurityCheck()
 	{
 		System.out.println("registerSlaveSecurityCheck Security Check");
 		Object [] args = thisJoinPoint.getArgs();
@@ -55,6 +55,7 @@ public aspect SecurityAspect {
 		if(QueryProtocol.getUserKey().equals(token)) proceed();
 		else
 		{
+			System.out.printf("[FILEMASTER] Invalid key [%s]\r\n", token);
 			Controller.setQuickResponseMessage(404, "error", "Invalid register token.", (HttpServletResponse)args[1]);
 		}
 	}

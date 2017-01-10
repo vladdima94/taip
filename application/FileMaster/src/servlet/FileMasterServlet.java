@@ -8,7 +8,10 @@ package servlet;
 import QueryProtocol.QueryProtocol;
 import controller.Controller;
 import controller.ControllerFactory;
-import dao.ConfigParamsDAO;
+import dao.Concrete.ConcreteConfigParamsDAO;
+import dao.Factory.AbstractFactory;
+import dao.Factory.DAOFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -53,6 +56,8 @@ public class FileMasterServlet extends HttpServlet {
     }
     ////////////////////////////////////////////////////////////////////////////
 
+    public static DAOFactory daoFactory = AbstractFactory.getInstance().getDAOFactoryInstance(AbstractFactory.JDBC_DAO_FACTORY);
+
     
     @Override
     public void init() throws ServletException {
@@ -70,7 +75,7 @@ public class FileMasterServlet extends HttpServlet {
     public static void loadConfigParams(String path)
     {
         try {
-            ConfigParamsDAO.loadConfigParams(path, configParams);
+            ConcreteConfigParamsDAO.loadConfigParams(path, configParams);
         } catch (IOException ex) {
             FileMasterServlet.writeToLog("<ERROR> FileSlaveServlet.loadConfigParams.loadConfigParams() : IOException(" + ex.getMessage() + ")");
             Logger.getLogger(FileMasterServlet.class.getName()).log(Level.SEVERE, null, ex);
