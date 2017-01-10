@@ -27,13 +27,21 @@ public class ControllerFactory {
         if(type == null) return new ErrorController();
         switch(type)
         {
+	        case "search":
+	        {
+	            return new SearchController();
+	        }
             case "prepareServlet":
             {
                 return new PrepareServletController();
             }
-            case "search":
+            case "train":
             {
-                return new SearchController();
+                return new TrainController();
+            }
+            case "upload":
+            {
+                return new UploadImageController();
             }
             default: return new ErrorController();
         }

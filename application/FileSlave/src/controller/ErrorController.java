@@ -20,17 +20,11 @@ import utils.UriUtils;
  *
  * @author Vlad
  */
-public class ErrorController implements Controller{
+public class ErrorController extends Controller{
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, UriUtils uri) {
-        try {
-            JsonUtils responseBody = new JsonUtils();
-            responseBody.setStatus("Error, unknown Action!");
-            responseBody.writeToOutput(response.getWriter());
-        } catch (IOException ex) {
-            Logger.getLogger(ErrorController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Controller.setQuickResponseMessage(400, "error", "invalid action", response);
     }
     
 }

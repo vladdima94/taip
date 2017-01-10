@@ -5,11 +5,11 @@
  */
 package QueryProtocol;
 
-import dao.QueryProtocolDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -17,6 +17,7 @@ import java.io.Reader;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.sql.SQLException;
@@ -28,17 +29,24 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
+
+import Exceptions.EntityAlreadyRegisteredException;
+import Exceptions.InvalidJSONException;
+import controller.Controller;
+import dao.SearchSystemDAO;
+import dao.Factory.DAOFactory;
 import servlet.FileSlaveServlet;
 import utils.JSONUtils.JSONMapAdapter;
 import utils.JSONUtils.JSONStringAdapter;
 import utils.JSONUtils.JsonUtils;
-
+import dao.*;
 /**
  *
  * @author Vlad
  */
 public class QueryProtocol {
-    private QueryProtocolDAO dataAccess = new QueryProtocolDAO();
+	
+	private QueryProtocolDAO dataAccess = (QueryProtocolDAO)FileSlaveServlet.daoFactory.getDAOInstance(DAOFactory.QUERY_PROTOCOL_DAO);
     
     public void sendRequestsToSlaves(HttpServletRequest req, HttpServletResponse resp, double [] queryData)
     {
@@ -82,26 +90,26 @@ public class QueryProtocol {
     }
     
     
-    public void registerEntity(String entity, String token)
+    public void registerEntity(String entity, String token) throws EntityAlreadyRegisteredException, ClassNotFoundException, SQLException
     {
-        try {
+        //try {
             dataAccess.addTokenToDB(entity, token);
-        } catch (ClassNotFoundException ex) {
+        //}catch(Exception ex){}
+        /* catch (ClassNotFoundException ex) {
             FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.registerEntity.addTokenToDB() : ClassNotFoundException(" + ex.getMessage() + ")");
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.registerEntity.addTokenToDB() : SQLException(" + ex.getMessage() + ")");
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     
-    public static void sendRegisterRequestToMaster(HttpServletResponse response, String entity, String token, String link, String maxDBSize)
+    public void sendRegisterRequestToMaster(HttpServletResponse response, String entity, String token, String link, String maxDBSize) throws MalformedURLException, ProtocolException, IOException, InvalidJSONException
     {
         if(entity == null || token == null || link == null)
         {
             FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendRegisterRequestToMaster() : NULL MasterURI or SlaveURI in config File or invalid generated token.");
         }
-        try {
             URL url = new URL(entity + "/registerSlave?key=" + QueryProtocol.userRegistrationKey);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoInput(true);
@@ -126,30 +134,24 @@ public class QueryProtocol {
             wr.flush();
             
             JSONObject responseJSON = JsonUtils.readBody(new InputStreamReader(conn.getInputStream()));
+            if(responseJSON == null)
+            {
+            	throw new InvalidJSONException("Failed to register Slave to Master");
+            }
             String status = (String) responseJSON.get("status");
             if(status == null)
             {
-                FileSlaveServlet.writeToLog("<STATUS> Failed to register Slave to Master: [Invalid response from Master]");
-                return;
+            	throw new InvalidJSONException("Failed to register Slave to Master");
             }
             if(status.equals("success")){
                 FileSlaveServlet.writeToLog("<STATUS> Successfully registered Slave to Master key[" + token + "]");
                 FileSlaveServlet.configParams.put("requestsKey", token);
-                response.setStatus(200);
-                PrintWriter writer = response.getWriter();
-                writer.append("Success").flush();
+                Controller.setQuickResponseMessage(200, "success", "Successfully registered Slave to Master", response);
             }
             else{
                 FileSlaveServlet.writeToLog("<STATUS> Failed to registered Slave to Master key[" + token + "]");
-                response.setStatus(400);
-                PrintWriter writer = response.getWriter();
-                writer.append(" Failed to registered Slave to Master key").flush();
+                Controller.setQuickResponseMessage(400, "error", "Failed to register Slave to Master", response);
             }
-        } catch (MalformedURLException ex) {
-            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendRegisterRequestToMaster() : MalformedURLException(" + ex.getMessage() + ")");
-        } catch (IOException ex) {
-            FileSlaveServlet.writeToLog("<ERROR> QueryProtocol.sendRegisterRequestToMaster() : IOException(" + ex.getMessage() + ")");
-        }
     }
     public static void sendUnregisterRequestToMaster(String entity, String token, String link)
     {
@@ -196,7 +198,14 @@ public class QueryProtocol {
         }
     }
     
-    
+    public static boolean checkAdminKey(String key)
+    {
+    	return key != null && adminKey != null && key.equals(adminKey);
+    }
+    public static boolean checkAcceptQueriesKey(String key)
+    {
+    	return key != null && adminKey != null && key.equals(acceptQueriesKey);
+    }
     public static String acceptQueriesKey;
     private static String userRegistrationKey = "vladdima";
     private static String adminKey;
@@ -208,6 +217,7 @@ public class QueryProtocol {
         {
             adminKey = new BigInteger(130, securedRandom).toString();
             out.append(adminKey).flush();
+            System.out.printf("[FileSlave] AdminKey [%s]\r\n", adminKey);
         } catch (IOException ex) {
             FileSlaveServlet.writeToLog("<WARNING> QueryProtocol.generateAdminKey() : IOException(Failed to write key to adminKey.txt)");
             Logger.getLogger(QueryProtocol.class.getName()).log(Level.SEVERE, null, ex);
