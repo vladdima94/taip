@@ -11,5 +11,10 @@ Lab4:
 			    SearchAlgorithm (interface), CBIRSearchAlgorith,
 Lab5:
    - ran tests for QueryProtocol key generator and all JSONAdapters as it can be seen in directory "\taip\documentation\DimaVladTests" (not all tests were captured in screenshots)
-Lab6:
-Lab7:
+Lab6:  Implemented Logging and Security Component using AspectJ
+Lab7:  Work on project
+Lab8:  Research on a new way of calculating similarity level using HSV color space for images and specific distances
+Lab9:  Functional testing on components and one stresstest on Uploading Images workflow
+Lab10: Refactoring on DAO objects
+Lab11: Project is SOA
+Lab12: 
