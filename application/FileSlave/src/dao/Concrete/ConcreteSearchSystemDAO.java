@@ -298,5 +298,18 @@ public class ConcreteSearchSystemDAO extends ConcreteJDBCDAO implements SearchSy
 		conn.close();
 		return output;
 	}
+
+
+
+    public List<ImageModel> getImagesFromClusters(int ... clusters) throws ClassNotFoundException, SQLException
+    {
+    	List<ImageModel> output = new ArrayList();
+    	for(int i : clusters)
+    	{
+    		output.addAll(getImagesFromCluster(i));
+    	}
+    	return output;
+    }
+
 }
 

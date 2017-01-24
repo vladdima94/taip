@@ -17,4 +17,4 @@ Lab8:  Research on a new way of calculating similarity level using HSV color spa
 Lab9:  Functional testing on components and one stresstest on Uploading Images workflow
 Lab10: Refactoring on DAO objects
 Lab11: Project is SOA
-Lab12: 
+Lab12: Technical Report

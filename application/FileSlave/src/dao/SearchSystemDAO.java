@@ -22,6 +22,7 @@ public interface SearchSystemDAO extends DAO{
     public List<Instance> getInstancesFromDB(SearchAlgorithm searchAlg) throws SQLException, ClassNotFoundException;
     public void updateImageToClusters(KMeans algorithm) throws ClassNotFoundException, SQLException;
     public List<ImageModel> getImagesFromCluster(int clusterID) throws ClassNotFoundException, SQLException;
+    public List<ImageModel> getImagesFromClusters(int ... clusters) throws ClassNotFoundException, SQLException;
     
     public static void readFeatureVector(double [] vector, String outputFile) throws FileNotFoundException, IOException
     {

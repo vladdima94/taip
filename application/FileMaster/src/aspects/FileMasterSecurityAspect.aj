@@ -59,5 +59,4 @@ public aspect FileMasterSecurityAspect {
 			Controller.setQuickResponseMessage(404, "error", "Invalid register token.", (HttpServletResponse)args[1]);
 		}
 	}
-
 }
