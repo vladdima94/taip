@@ -77,8 +77,11 @@ public class SearchController extends Controller{
         SearchSystemDAO searchDAO = ((SearchSystemDAO)FileSlaveServlet.daoFactory.getDAOInstance(DAOFactory.SEARCH_SYSTEM_DAO));
 		try {
 //			results = searchDAO.searchFiles(inputImage, 10, searchAlg);
-			results = searchDAO.getImagesFromCluster(classifier.classifie(inputInstance));
+//			long time = System.currentTimeMillis();
+			//results = searchDAO.getImagesFromCluster(classifier.classifie(inputInstance));
+			results = searchDAO.getImagesFromClusters(classifier.getFirstNClasses(inputInstance, 2));
 			searchAlg.sortData(results, inputInstance);
+//	    	System.out.printf("[client] Time for training [%d]\r\n", (System.currentTimeMillis() - time));
 		} catch (ClassNotFoundException ex) {
 			Controller.setQuickResponseMessage(500, "error", "Server error, working to fix it!", response);
             FileSlaveServlet.writeToLog("<ERROR> SearchController.processRequest() : ClassNotFoundException(" + ex.getMessage() + ")");

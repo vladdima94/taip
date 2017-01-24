@@ -142,4 +142,11 @@ public class KNN extends Classifier{
 		}
 		return output;
 	}
+
+
+	@Override
+	public int[] getFirstNClasses(Instance test, int n) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

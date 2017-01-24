@@ -18,5 +18,6 @@ public abstract class Classifier {
 	public abstract Instance getInstanceObject(int numberOfAttributes);
 	public abstract Instance getInstanceObject(double [] data);
 	public abstract Collection getSimilarInstances(Instance test);
+	public abstract int [] getFirstNClasses(Instance test, int n);
 
 }

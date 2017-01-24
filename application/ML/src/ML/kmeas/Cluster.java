@@ -27,7 +27,7 @@ public class Cluster{
 	{
 		double avr;
 		int numberOfInstances = instances.size();
-		System.out.print("clusterID: " + this.clusterID);
+//		System.out.print("clusterID: " + this.clusterID);
 		for(int i = 0; i < position.attributes.length; ++i)
 		{
 			avr = 0;
@@ -36,9 +36,9 @@ public class Cluster{
 				avr += instance.attributes[i];
 			}
 			position.attributes[i] = avr / numberOfInstances;
-			System.out.print(position.attributes[i] + " ");
+//			System.out.print(position.attributes[i] + " ");
 		}
-		System.out.print("\r\n");
+//		System.out.print("\r\n");
 	}
 	
 	

@@ -5,36 +5,25 @@
  */
 package SearchSystem.SearchingAlgorithms;
 
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import ML.Classifier;
 import ML.ClassifierFactory;
 import ML.Instance;
 import ML.kmeas.KMeans;
-import ML.kmeas.KMeansInstance;
 import Models.ImageModel;
 import dao.SearchSystemDAO;
 import dao.Factory.DAOFactory;
 import servlet.FileSlaveServlet;
-import utils.ImageUtils;
 
 /**
  *
@@ -84,11 +73,17 @@ public class CBIRSearchAlgorithm implements SearchAlgorithm{
 		}
 		clusterizationAlg = null;
     }
-	
+
+    
+
+    
+    //////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////// RGB FEATURES EXTRACTION ////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////
+    
     @Override
     public byte extractFeatures(Mat image, String outputFile)
     {
-//    	Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2HSV);
     	int rows = image.rows();
     	int cols = image.cols();
     	int blockHeigth = rows / numberBlocksHeigth;
@@ -121,12 +116,12 @@ public class CBIRSearchAlgorithm implements SearchAlgorithm{
 			{
 				double pixel [] = image.get(ii, jj);
 				vectors[counter+3] += Math.pow(pixel[0] - vectors[counter], 2);      // H variation
-				vectors[counter+4] += Math.pow(pixel[0] - vectors[counter+1], 2);	 // S variation
-				vectors[counter+5] += Math.pow(pixel[0] - vectors[counter+2], 2);    // V varation
+				vectors[counter+4] += Math.pow(pixel[1] - vectors[counter+1], 2);	 // S variation
+				vectors[counter+5] += Math.pow(pixel[2] - vectors[counter+2], 2);    // V variation
 			}
 			vectors[counter+3] = Math.sqrt( vectors[counter+3] / sizeOfBlocks );     // H variation
 			vectors[counter+4] = Math.sqrt( vectors[counter+4] / sizeOfBlocks );     // S variation
-			vectors[counter+5] = Math.sqrt( vectors[counter+5] / sizeOfBlocks );     // V varation
+			vectors[counter+5] = Math.sqrt( vectors[counter+5] / sizeOfBlocks );     // V variation
 			
 			counter += 6;
 		}
@@ -135,6 +130,84 @@ public class CBIRSearchAlgorithm implements SearchAlgorithm{
 		image.release();
         return 1;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    
+    
+    
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////// HUE FEATURES EXTRACTION ////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////
+    
+    public byte extractFeaturesHUE(Mat image, String outputFile)
+    {
+    	int rows = image.rows();
+    	int cols = image.cols();
+    	int blockHeigth = rows / numberBlocksHeigth;
+    	int blockWidth = cols / numberBlocksWidth;
+    	int sizeOfBlocks = blockHeigth*blockWidth;
+    	rows = numberBlocksHeigth * blockHeigth;
+    	cols = numberBlocksWidth * blockWidth;
+    	Imgproc.resize(image, image, new Size(cols, rows));
+    	Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2HSV);
+    	
+        double [] vectors = new double[numberBlocksWidth*numberBlocksHeigth*6]; // 3 channels, average and variance for each
+        int counter = 0;
+        
+        double Hmean = 0;
+        double Smean = 0;
+        double Vmean = 0;
+        
+		for(int i = 0; i < rows; i += blockHeigth)
+		for(int j = 0; j < cols; j += blockWidth)
+		{
+			double pixel [] = image.get(i, j);
+			for(int ii = i; ii < i + blockHeigth; ++ii)
+			for(int jj = j; jj < j + blockWidth; ++jj)
+			{
+				pixel = image.get(ii, jj);
+				if(vectors[counter] < pixel[0]) vectors[counter] = pixel[0];      // H max
+				if(vectors[counter+1] < pixel[1]) vectors[counter+1] = pixel[1];      // H max
+				if(vectors[counter+2] < pixel[2]) vectors[counter+2] = pixel[1];      // H max
+				
+				Hmean += pixel[0];      // H mean
+				Smean += pixel[1];    		// S mean
+				Vmean += pixel[2];   		// V mean
+			}
+			vectors[counter] *= 2;  				// OpenCV scales H to H/2 to fit uchar;
+			
+			Hmean = Hmean * 2 / sizeOfBlocks;       // H mean
+			Smean /= sizeOfBlocks;    				// S mean
+			Vmean /= sizeOfBlocks;    				// V mean
+			
+			for(int ii = i; ii < i + blockHeigth; ++ii)
+			for(int jj = j; jj < j + blockWidth; ++jj)
+			{
+				pixel = image.get(ii, jj);
+				vectors[counter+3] += Math.pow(pixel[0] * 2 - Hmean, 2);      // H variation
+				vectors[counter+4] += Math.pow(pixel[1] - Smean, 2);	 // S variation
+				vectors[counter+5] += Math.pow(pixel[2] - Vmean, 2);    // V variation
+			}
+			vectors[counter+3] = Math.sqrt( vectors[counter+3] / sizeOfBlocks );     // H variation
+			vectors[counter+4] = Math.sqrt( vectors[counter+4] / sizeOfBlocks );     // S variation
+			vectors[counter+5] = Math.sqrt( vectors[counter+5] / sizeOfBlocks );     // V variation
+			
+			counter += 6;
+		}
+		
+		writeVectorToFile(vectors, outputFile);
+		image.release();
+        return 1;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    
+    
     
     private void writeVectorToFile(double [] vector, String outputFile)
     {
@@ -145,26 +218,94 @@ public class CBIRSearchAlgorithm implements SearchAlgorithm{
     			buf.clear();
     			buf.asDoubleBuffer().put(vector);
     			out.write(buf);
-//    			System.out.printf("Wrote [%d] bytes\r\n", out.write(buf));
     		}catch(IOException ex){
     			// FIXME: FAILED TO SAVE VECTOR, REMOVE FROM DB IMAGE
 		}
+    }
+
+    
+    
+    
+    
+    
+    
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////// HUE FEATURES EXTRACTION ////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////
+    
+    public double [] extractFeaturesHUE(Mat image)
+    {
+    	int rows = image.rows();
+    	int cols = image.cols();
+    	int blockHeigth = rows / numberBlocksHeigth;
+    	int blockWidth = cols / numberBlocksWidth;
+    	int sizeOfBlocks = blockHeigth*blockWidth;
+    	rows = numberBlocksHeigth * blockHeigth;
+    	cols = numberBlocksWidth * blockWidth;
+    	Imgproc.resize(image, image, new Size(cols, rows));
+    	Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2HSV);
+    	
+        double [] vectors = new double[numberBlocksWidth*numberBlocksHeigth*6]; // 3 channels, average and variance for each
+        int counter = 0;
+        
+        double Hmean = 0;
+        double Smean = 0;
+        double Vmean = 0;
+        
+		for(int i = 0; i < rows; i += blockHeigth)
+		for(int j = 0; j < cols; j += blockWidth)
+		{
+			double pixel [] = image.get(i, j);
+			for(int ii = i; ii < i + blockHeigth; ++ii)
+			for(int jj = j; jj < j + blockWidth; ++jj)
+			{
+				pixel = image.get(ii, jj);
+				if(vectors[counter] < pixel[0]) vectors[counter] = pixel[0];      // H max
+				if(vectors[counter+1] < pixel[1]) vectors[counter+1] = pixel[1];      // H max
+				if(vectors[counter+2] < pixel[2]) vectors[counter+2] = pixel[1];      // H max
+				
+				Hmean += pixel[0];      // H mean
+				Smean += pixel[1];    		// S mean
+				Vmean += pixel[2];   		// V mean
+			}
+			vectors[counter] *= 2;  				// OpenCV scales H to H/2 to fit uchar;
+			
+			Hmean = Hmean * 2 / sizeOfBlocks;       // H mean
+			Smean /= sizeOfBlocks;    				// S mean
+			Vmean /= sizeOfBlocks;    				// V mean
+			
+			for(int ii = i; ii < i + blockHeigth; ++ii)
+			for(int jj = j; jj < j + blockWidth; ++jj)
+			{
+				pixel = image.get(ii, jj);
+				vectors[counter+3] += Math.pow(pixel[0] * 2 - Hmean, 2);      // H variation
+				vectors[counter+4] += Math.pow(pixel[1] - Smean, 2);	 // S variation
+				vectors[counter+5] += Math.pow(pixel[2] - Vmean, 2);    // V variation
+			}
+			vectors[counter+3] = Math.sqrt( vectors[counter+3] / sizeOfBlocks );     // H variation
+			vectors[counter+4] = Math.sqrt( vectors[counter+4] / sizeOfBlocks );     // S variation
+			vectors[counter+5] = Math.sqrt( vectors[counter+5] / sizeOfBlocks );     // V variation
+			
+			counter += 6;
+		}
+		
+		image.release();
+        return vectors;
     }
     
-    private void readFile(double [] vector, String outputFile)
-    {
-    	try(FileInputStream output = new FileInputStream(outputFile);
-    		FileChannel out = output.getChannel())
-    	{
-    			ByteBuffer buf = ByteBuffer.allocate(8 * vector.length);
-    			buf.clear();
-    			out.read(buf);
-    			buf.flip();
-    			buf.asDoubleBuffer().get(vector);
-    		}catch(IOException ex){
-    			// FIXME: FAILED TO SAVE VECTOR, REMOVE FROM DB IMAGE
-		}
-    }
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    
+    
+    
+    
+    
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////// RGB FEATURES EXTRACTION ////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////
     
     public double [] extractFeatures(Mat image)
     {
@@ -202,8 +343,8 @@ public class CBIRSearchAlgorithm implements SearchAlgorithm{
 			{
 				double pixel [] = image.get(ii, jj);
 				vectors[counter+3] += Math.pow(pixel[0] - vectors[counter], 2);      // H variation
-				vectors[counter+4] += Math.pow(pixel[0] - vectors[counter+1], 2);	 // S variation
-				vectors[counter+5] += Math.pow(pixel[0] - vectors[counter+2], 2);    // V varation
+				vectors[counter+4] += Math.pow(pixel[1] - vectors[counter+1], 2);	 // S variation
+				vectors[counter+5] += Math.pow(pixel[2] - vectors[counter+2], 2);    // V varation
 			}
 			vectors[counter+3] = Math.sqrt( vectors[counter+3] / sizeOfBlocks );     // H variation
 			vectors[counter+4] = Math.sqrt( vectors[counter+4] / sizeOfBlocks );     // S variation
@@ -211,8 +352,24 @@ public class CBIRSearchAlgorithm implements SearchAlgorithm{
 			
 			counter += 6;
 		}
+		image.release();
 		return vectors;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    
+    
+    
+    
+    
+    
+    
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////// RGB SIMILARITY LEVEL ////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     
     @Override
     public double getSimilarityLevel(double[] inputImage, double[] instance) {
@@ -224,10 +381,55 @@ public class CBIRSearchAlgorithm implements SearchAlgorithm{
     	return 1.0 - similarity/(double)inputImage.length;
     }
     
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    
+    
+    
+    
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////// HUE SIMILARITY LEVEL ////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    
+    public double getSimilarityLevelHSV(double[] inputImage, double[] instance) {
+        double similarity = 0;
+    	for(int i = 0; i < inputImage.length && i < instance.length; i += 6)
+        {
+    		similarity += (1 / (1 + getHueDistance(inputImage[i], instance[i]) 
+    							  + getSVDistance(inputImage[i+1], instance[i+1])
+    							  + getSVDistance(inputImage[i+2], instance[i+2])));
+        }
+    	return similarity/64.0;
+    }
+    
+    private static double hueCons = 1/256;
+    private static double hueCons2 = Math.PI / 2;
+    private double getHueDistance(double a, double b)
+    {
+    	return 1 - Math.pow(Math.cos(hueCons * Math.abs(a - b) * hueCons2), 2);
+    }
+    private double getSVDistance(double a, double b)
+    {
+    	return Math.abs(a-b) / 256.0;
+    }
+    
+    
     private double getDistance(double p1, double p2)
     {
     	return Math.abs(p1-p2)/256.0;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    
+    
+    
+    
+    
+    
     
     
     public void sortData(List<ImageModel> results, Instance inputInstance)
@@ -248,42 +450,6 @@ public class CBIRSearchAlgorithm implements SearchAlgorithm{
     	
     	
     	Collections.sort(results);
-
-//    	String outputPath = "C:\\Users\\Vlad\\Desktop\\results\\";
-//    	int size = results.size();
-//    	for(int i = 0; i < size; ++i)
-//    	{
-//    		ImageModel temp = results.get(i);
-//			BufferedImage image = getImageFromLink(temp.link);
-//			if(image == null || image.getType() > 7) continue;
-//			Mat img = ImageUtils.Convert_BufferedImage2Mat_BGR(image);
-//			Imgcodecs.imwrite(outputPath + i + ".jpg", img);
-//			System.out.printf("Image [%d] similarity [%f]", i , temp.similarity);
-//    	}
     }
     
-    
-    
-	private BufferedImage getImageFromLink(String link)
-	{
-        URL url;
-		try {
-			url = new URL(link);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	        conn.setDoOutput(true);
-	        conn.setRequestMethod("GET");
-	        conn.setConnectTimeout(15000);
-	        return ImageIO.read(conn.getInputStream());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-		}
-		return null;
-	}
 }

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 import ML.Classifier;
 import ML.Instance;
@@ -46,6 +47,33 @@ public class KMeans extends Classifier{
 		return -2;
 	}
 	
+	public int [] getFirstNClasses(Instance test, int n)
+	{
+		int [] output = new int[n];
+		TreeMap<Double, Integer> mapped = new TreeMap();
+		
+		if(test == null) return null;
+		if(test instanceof KMeansInstance)
+		{
+			double tempDistance;
+			double minDistance = test.computeEuclidDistance(this.clusters[0].position);
+			for(int i = 0; i < this.clusters.length; ++i)
+			{
+				mapped.put(test.computeEuclidDistance(this.clusters[i].position), this.clusters[i].clusterID);
+			}
+		}
+		
+		int counter = 0;
+		for(Map.Entry<Double, Integer> row : mapped.entrySet())
+		{
+			output[counter] = row.getValue();
+			++counter;
+			if(counter >= n)break;
+		}
+		
+		return output;
+	}
+	
 	private Cluster getCorespondingCluster(Instance test)
 	{
 		if(test == null) return null;
@@ -73,13 +101,13 @@ public class KMeans extends Classifier{
 		
 
 		
-		System.out.println("------------ Started Trainning ------------");
-		System.out.println("-  Params   -");
+//		System.out.println("------------ Started Trainning ------------");
+//		System.out.println("-  Params   -");
 		int numberOfInstances = instances.size();
-		System.out.printf("Features Size - [%d]\r\n", instances.get(0).attributes.length);
-		System.out.printf("Number of Features - [%d]\r\n", numberOfInstances);
-		System.out.printf("Number of Clusters - [%d]\r\n", k);
-		System.out.println("-------------");
+//		System.out.printf("Features Size - [%d]\r\n", instances.get(0).attributes.length);
+//		System.out.printf("Number of Features - [%d]\r\n", numberOfInstances);
+//		System.out.printf("Number of Clusters - [%d]\r\n", k);
+//		System.out.println("-------------");
 		Map<Integer, Boolean> cacheInitalClustersPoints = new HashMap();
 		for(int i = 0; i < k ; ++i)
 		{
@@ -89,12 +117,12 @@ public class KMeans extends Classifier{
 			cacheInitalClustersPoints.put(random, true);
 			this.clusters[i].position = instances.get( random ).clone();
 			
-			System.out.printf("ClusterID " + this.clusters[i].clusterID + " (Instance [%d]) : ", random);
-			for(int ii = 0; ii < this.clusters[i].position.attributes.length; ++ii)
-			{
-				System.out.print(this.clusters[i].position.attributes[ii] + " ");
-			}
-			System.out.print("\r\n");
+//			System.out.printf("ClusterID " + this.clusters[i].clusterID + " (Instance [%d]) : ", random);
+//			for(int ii = 0; ii < this.clusters[i].position.attributes.length; ++ii)
+//			{
+//				System.out.print(this.clusters[i].position.attributes[ii] + " ");
+//			}
+//			System.out.print("\r\n");
 			
 		}
 		cacheInitalClustersPoints = null;
@@ -109,7 +137,7 @@ public class KMeans extends Classifier{
 		int i = 1;
 		do
 		{
-			System.out.println(" ------------ ITERATION " + i + " ------------- ");
+//			System.out.println(" ------------ ITERATION " + i + " ------------- ");
 			
 			//save old Clusters points
 			updateCacheClustersPoints();
@@ -120,7 +148,7 @@ public class KMeans extends Classifier{
 			//update position of clusters
 			updateClustersPosition();
 
-			System.out.println(" -------- FINISHED ITERATION " + i++ + " -------- ");
+//			System.out.println(" -------- FINISHED ITERATION " + i++ + " -------- ");
 		}while(checkIfClustersInstancesChanged());
 		
 		cachedClustersPoints = null;
